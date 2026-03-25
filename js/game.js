@@ -1,7 +1,7 @@
 // ====================================
 // ---  Constants ---
 // ====================================
-const DEVELOPER_MODE = true;
+const DEVELOPER_MODE = false;
 const STARTING_CASH = 3000;
 const BASE_MONKEY_COST = 2000;
 const MONKEY_COST_MULTIPLIER = 1.15;
@@ -557,8 +557,8 @@ function autoClick(autoClicker) {
   const box = document.getElementById("autoclicker-" + autoClicker.id);
   box.style.top = rect.top + window.scrollY + "px";
   box.style.left = rect.left + window.scrollX + "px";
-  box.style.width = rect.width + 5px;
-  box.style.height = rect.height + 5px;
+  box.style.width = rect.width + 6 + "px";
+  box.style.height = rect.height + 6 + "px";
   setTimeout(() => {
     button.click();
     autoClicker.busy = false;
