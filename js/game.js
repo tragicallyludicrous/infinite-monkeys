@@ -1,7 +1,7 @@
 // ====================================
 // ---  Constants ---
 // ====================================
-const DEVELOPER_MODE = true;
+const DEVELOPER_MODE = false;
 const STARTING_CASH = 3000;
 const BASE_MONKEY_COST = 2000;
 const MONKEY_COST_MULTIPLIER = 1.15;
