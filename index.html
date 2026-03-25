@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Monkeys</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <div id="ending-div" style="display: none"></div>
+    <div id="dev-mode" style="display: none"></div>
+    <div id="hud">
+      <h3 id="cash-display">Cash: $1000</h3>
+      <h3 id="monkeys-display">Monkeys: 0</h3>
+      <h3 id="top-scoring-monkey" style="display: none">Top Scoring Monkey:</h3>
+      <p id="passage-to-match"><b>Passage:</b></p>
+      <p id="generations"><b>Attempts:</b> 0</p>
+      <p id="ETA"><b>ETA: </b>Never</p>
+      <p id="cash-per-second"><b>Cash/sec: </b>0</p>
+      <p id="best-passage" style="display: none"><b>Best Passage:</b></p>
+      <h3 id="autoclickers-display" style="display: none">Autoclickers: 0</h3>
+      <div id="buyMonkeyButton"><button>Buy Monkey: $2000</button></div>
+      <div id="buyAutoClickerButton" style="display: none">
+        <button>Buy Autoclicker: $2000</button>
+      </div>
+      <div id="buyMonkeyPackButton" style="display: none">
+        <button>Buy MonkeyPack: $20,000</button>
+      </div>
+      <div id="buyMonkeyFarmButton" style="display: none">
+        <button>Buy MonkeyFarm: $200,000</button>
+      </div>
+    </div>
+
+    <br />
+    <div id="monkeydiv"></div>
+    <script src="js/monkeyNames.js" defer></script>
+    <script src="js/game.js" defer></script>
+  </body>
+</html>

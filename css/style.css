@@ -1,0 +1,74 @@
+#monkeydiv {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+#hud {
+  position: relative;
+  z-index: 100;
+}
+
+.monkey-card {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  min-height: 100px;
+  overflow-wrap: anywhere;
+  position: relative;
+}
+
+.monkeyPack-card,
+.monkeyFarm-card {
+  border: 2px solid black;
+  padding: 10px;
+  text-align: center;
+  min-height: 100px;
+  overflow-wrap: anywhere;
+  position: relative;
+}
+
+.correct {
+  background-color: greenyellow;
+}
+
+.monkey-wrapper,
+.monkeyPack-wrapper,
+.monkeyFarm-wrapper {
+  position: relative;
+}
+
+.toast {
+  min-width: 100px;
+  padding: 10px;
+  top: 75%;
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  background-color: cornflowerblue;
+  color: white;
+  border-radius: 5px;
+  z-index: 1;
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(10px);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+}
+
+.autoClicker {
+  width: 40px;
+  height: 20px;
+  border-radius: 5px;
+  position: absolute;
+  opacity: 0.75;
+  transition:
+    top 1s,
+    left 1s;
+}
