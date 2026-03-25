@@ -1,7 +1,7 @@
 // ====================================
 // ---  Constants ---
 // ====================================
-const DEVELOPER_MODE = false;
+const DEVELOPER_MODE = true;
 const STARTING_CASH = 3000;
 const BASE_MONKEY_COST = 2000;
 const MONKEY_COST_MULTIPLIER = 1.15;
@@ -557,6 +557,8 @@ function autoClick(autoClicker) {
   const box = document.getElementById("autoclicker-" + autoClicker.id);
   box.style.top = rect.top + window.scrollY + "px";
   box.style.left = rect.left + window.scrollX + "px";
+  box.style.width = rect.width + 5px;
+  box.style.height = rect.height + 5px;
   setTimeout(() => {
     button.click();
     autoClicker.busy = false;
@@ -614,13 +616,13 @@ function flagSet() {
   }
 
   // -- MONKEYPACKS ---
-  if (monkeys.length >= MONKEYPACK_THRESHOLD && !monkeyPackFlag) {
+  if (totalMonkeys >= MONKEYPACK_THRESHOLD && !monkeyPackFlag) {
     gameState.monkeyPackFlag = true;
     HUDNotify("We're buying 10-packs now.", "maroon");
   }
 
   // -- MONKEYFARMS ---
-  if (monkeys.length >= MONKEYFARM_THRESHOLD && !monkeyFarmFlag) {
+  if (totalMonkeys >= MONKEYFARM_THRESHOLD && !monkeyFarmFlag) {
     gameState.monkeyFarmFlag = true;
     HUDNotify("MOAR MONKEYS", "maroon");
   }
