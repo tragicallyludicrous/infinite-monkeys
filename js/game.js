@@ -5,7 +5,7 @@ const DEVELOPER_MODE = false;
 const STARTING_CASH = 3000;
 const BASE_MONKEY_COST = 2000;
 const MONKEY_COST_MULTIPLIER = 1.15;
-let PASSAGE = "TO BE OR NOT TO BE";
+const PASSAGE = "TO BE OR NOT TO BE";
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 const TYPE_TIME = 4000;
 const PAYOUT_BASE = 100;
@@ -61,6 +61,7 @@ let gameState = {
   intBoosterFlag: false,
   winFlag: false,
   autoClickerTargets: [],
+  passage: PASSAGE,
   ETA: "Never",
 };
 
@@ -90,8 +91,8 @@ document
     event.preventDefault();
     const input = document.getElementById("change-passage").value;
     const newPassage = passageFormatter(input);
-    if (newPassage.length >= PASSAGE.length) {
-      PASSAGE = newPassage;
+    if (newPassage.length >= gameState.passage.length) {
+      gameState.passage = newPassage;
       document.getElementById("change-passage").value = "";
     } else {
       HUDNotify("New passage must be at least as long as old one!", "maroon");
@@ -256,8 +257,8 @@ function score(object, output) {
   let streak = 0;
   let score = 0;
 
-  for (let i = 0; i < PASSAGE.length; i++) {
-    if (output[i] == PASSAGE[i]) {
+  for (let i = 0; i < gameState.passage.length; i++) {
+    if (output[i] == gameState.passage[i]) {
       streak++;
       score += streak;
     } else {
@@ -347,7 +348,7 @@ function monkeyProb(object) {
   const pInt = (object.intelligence - 1) / (ALPHABET.length - 1);
   const pNoInt =
     (ALPHABET.length - 1 - object.intelligence) / (ALPHABET.length - 1);
-  const probability = (pInt + pNoInt * pLuck) ** PASSAGE.length;
+  const probability = (pInt + pNoInt * pLuck) ** gameState.passage.length;
   return probability * object.threads;
 }
 
@@ -491,7 +492,7 @@ function objectType(object) {
       () => {
         rand = Math.floor(Math.random() * (ALPHABET.length - 1)) + 1;
         if (object.intelligence > 1 && rand < object.intelligence) {
-          object.outputs[i] += PASSAGE[typed];
+          object.outputs[i] += gameState.passage[typed];
         } else {
           object.outputs[i] += randomLetter();
         }
@@ -500,7 +501,7 @@ function objectType(object) {
         ).innerHTML = renderOutput(object.outputs);
 
         typed++;
-        if (typed >= PASSAGE.length) {
+        if (typed >= gameState.passage.length) {
           clearInterval(interval);
           // score this attempt
           gameState.generations++;
@@ -536,7 +537,7 @@ function objectType(object) {
           }
         }
       },
-      TYPE_TIME / (object.speed * PASSAGE.length),
+      TYPE_TIME / (object.speed * gameState.passage.length),
     );
   }
 }
@@ -545,8 +546,8 @@ function renderOutput(outputs) {
   let html = "";
   for (let i = 0; i < outputs.length; i++) {
     let styledOutput = "";
-    for (let j = 0; j < PASSAGE.length; j++) {
-      if (outputs[i][j] == PASSAGE[j]) {
+    for (let j = 0; j < gameState.passage.length; j++) {
+      if (outputs[i][j] == gameState.passage[j]) {
         styledOutput += `<span class="correct">${outputs[i][j]}</span>`;
       } else if (outputs[i][j] == undefined) {
         break;
@@ -679,10 +680,11 @@ function updateStats() {
     monkeys.length + monkeyPacks.length + monkeyFarms.length;
   const generations = document.getElementById("generations");
 
-  passageDisplay.innerHTML = `<b>Passage:</b> ${PASSAGE}`;
+  passageDisplay.innerHTML = `<b>Passage:</b> ${gameState.passage}`;
 
   // Passage Updater Minimum
-  document.getElementById("change-passage").minLength = PASSAGE.length;
+  document.getElementById("change-passage").minLength =
+    gameState.passage.length;
 
   // ETA
   if (gameState.generations != 0) {
@@ -826,7 +828,7 @@ function checkWin() {
     string = `...way too long.`;
   }
 
-  if (gameState.bestPassage == PASSAGE && !gameState.winFlag) {
+  if (gameState.bestPassage == gameState.passage && !gameState.winFlag) {
     gameState.winFlag = true;
     endingDiv = document.getElementById("ending-div");
     if (ETAInYears > 1) {
