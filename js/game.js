@@ -555,10 +555,10 @@ function autoClick(autoClicker) {
   );
   const rect = button.getBoundingClientRect();
   const box = document.getElementById("autoclicker-" + autoClicker.id);
-  box.style.top = rect.top + window.scrollY + "px";
-  box.style.left = rect.left + window.scrollX + "px";
-  box.style.width = rect.width + 6 + "px";
-  box.style.height = rect.height + 6 + "px";
+  box.style.top = rect.top + window.scrollY - 2 + "px";
+  box.style.left = rect.left + window.scrollX - 2 + "px";
+  box.style.width = rect.width + 4 + "px";
+  box.style.height = rect.height + 4 + "px";
   setTimeout(() => {
     button.click();
     autoClicker.busy = false;
