@@ -14,7 +14,18 @@
       <h3 id="cash-display">Cash: $1000</h3>
       <h3 id="monkeys-display">Monkeys: 0</h3>
       <h3 id="top-scoring-monkey" style="display: none">Top Scoring Monkey:</h3>
-      <p id="passage-to-match"><b>Passage:</b></p>
+      <p>
+        <span id="passage-to-match"><b>Passage:</b></span>
+        <br>
+        <form id="updatePassageForm">
+          <input
+            type="text"
+            id="change-passage"
+            placeholder="Update Passage?"
+            minlength="15">
+          <input type="submit">
+        </form>
+      </p>
       <p id="generations"><b>Attempts:</b> 0</p>
       <p id="ETA"><b>ETA: </b>Never</p>
       <p id="cash-per-second"><b>Cash/sec: </b>0</p>
