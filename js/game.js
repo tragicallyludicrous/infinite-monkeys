@@ -60,7 +60,7 @@ let gameState = {
   monkeyFarmFlag: false,
   intBoosterFlag: false,
   winFlag: false,
-
+  autoClickerTargets: [],
   ETA: "Never",
 };
 
@@ -235,12 +235,19 @@ function randomObject() {
     ...gameState.monkeyPacks,
     ...gameState.monkeyFarms,
   ];
-  const available = all.filter((m) => !m.typing);
+  const available = all
+    .filter((m) => !m.typing)
+    .filter((m) => !gameState.autoClickerTargets.includes(m));
   const maxThreads = Math.max(...available.map((m) => m.threads));
   const best_available = available.filter((m) => m.threads === maxThreads);
 
   // Prefer most threads
-  return best_available[Math.floor(Math.random() * best_available.length)];
+  const chosen_object =
+    best_available[Math.floor(Math.random() * best_available.length)];
+
+  gameState.autoClickerTargets.push(chosen_object);
+
+  return chosen_object;
 }
 
 // Get score of a typed passage
@@ -585,6 +592,8 @@ function autoClick(autoClicker) {
   setTimeout(() => {
     button.click();
     autoClicker.busy = false;
+    const idx = gameState.autoClickerTargets.indexOf(object);
+    if (idx !== -1) gameState.autoClickerTargets.splice(idx, 1);
   }, AUTOCLICKER_TIME / autoClicker.speed);
 }
 
