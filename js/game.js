@@ -5,7 +5,7 @@ const DEVELOPER_MODE = false;
 const STARTING_CASH = 3000;
 const BASE_MONKEY_COST = 2000;
 const MONKEY_COST_MULTIPLIER = 1.15;
-const PASSAGE = "TO BE OR NOT TO BE";
+let PASSAGE = "TO BE OR NOT TO BE";
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 const TYPE_TIME = 4000;
 const PAYOUT_BASE = 100;
@@ -59,6 +59,7 @@ let gameState = {
   monkeyFarmCost: BASE_MONKEYFARM_COST,
   monkeyFarmFlag: false,
   intBoosterFlag: false,
+  winFlag: false,
 
   ETA: "Never",
 };
@@ -82,6 +83,20 @@ document
 document
   .getElementById("buyMonkeyFarmButton")
   .addEventListener("click", () => buyMonkeyThing("monkeyFarm", 100));
+
+document
+  .getElementById("updatePassageForm")
+  .addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = document.getElementById("change-passage").value;
+    const newPassage = passageFormatter(input);
+    if (newPassage.length >= PASSAGE.length) {
+      PASSAGE = newPassage;
+      document.getElementById("change-passage").value = "";
+    } else {
+      HUDNotify("New passage must be at least as long as old one!", "maroon");
+    }
+  });
 
 // ====================================
 // --- Buying Stuff ---
@@ -210,6 +225,10 @@ function randomWord(source) {
   return source[Math.floor(Math.random() * source.length)];
 }
 
+function passageFormatter(text) {
+  return text.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
+}
+
 function randomObject() {
   const all = [
     ...gameState.monkeys,
@@ -217,7 +236,11 @@ function randomObject() {
     ...gameState.monkeyFarms,
   ];
   const available = all.filter((m) => !m.typing);
-  return available[Math.floor(Math.random() * available.length)];
+  const maxThreads = Math.max(...available.map((m) => m.threads));
+  const best_available = available.filter((m) => m.threads === maxThreads);
+
+  // Prefer most threads
+  return best_available[Math.floor(Math.random() * best_available.length)];
 }
 
 // Get score of a typed passage
@@ -649,6 +672,9 @@ function updateStats() {
 
   passageDisplay.innerHTML = `<b>Passage:</b> ${PASSAGE}`;
 
+  // Passage Updater Minimum
+  document.getElementById("change-passage").minLength = PASSAGE.length;
+
   // ETA
   if (gameState.generations != 0) {
     ETADisplay.innerHTML = `<b>ETA: </b>${ETAtoString()}`;
@@ -791,7 +817,8 @@ function checkWin() {
     string = `...way too long.`;
   }
 
-  if (gameState.bestPassage == PASSAGE) {
+  if (gameState.bestPassage == PASSAGE && !gameState.winFlag) {
+    gameState.winFlag = true;
     endingDiv = document.getElementById("ending-div");
     if (ETAInYears > 1) {
       endingDiv.innerHTML = `
