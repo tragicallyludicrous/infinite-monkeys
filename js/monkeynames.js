@@ -1,4 +1,4 @@
-const adjectives = [
+export const adjectives = [
   "Arboreal",
   "Prehensile",
   "Silverback",
@@ -101,7 +101,7 @@ const adjectives = [
   "Eye-rolling",
 ];
 
-const nouns = [
+export const nouns = [
   "Chimp",
   "Bonobo",
   "Gorilla",
