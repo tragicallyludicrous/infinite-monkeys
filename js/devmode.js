@@ -1,6 +1,6 @@
 import { gameState } from "./state.js";
 
-import { buyMonkey, buyMonkeyThing, buyAutoClicker } from "./game.js";
+import { buyMonkey, buyMonkeyThing, buyAutoClicker } from "./buying.js";
 
 import { updateCard } from "./monkeys.js";
 
