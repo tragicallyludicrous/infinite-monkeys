@@ -1,5 +1,7 @@
 import { gameState } from "./state.js";
 
+import { buySpeedBooster, buyIntBooster } from "./buying.js";
+
 import { randomWord, randomLetter, score } from "./helpers.js";
 
 import {
