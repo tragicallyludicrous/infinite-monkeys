@@ -85,8 +85,8 @@ export function score(object, output) {
   }
 
   if (streak > 1) {
-    if (streak > object.best_streak) {
-      object.best_streak = streak;
+    if (streak > object.bestStreak) {
+      object.bestStreak = streak;
       objectNotify(object, `New Best Streak! ${streak}`);
     }
   }
