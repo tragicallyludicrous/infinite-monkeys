@@ -181,19 +181,17 @@ export function renderOutput(outputs) {
   return html;
 }
 
-
 export class MonkeyObject {
   constructor(thing) {
-    
     const monkeyTypes = {
-    monkey: 1,
-    monkeyPack: 10,
-    monkeyFarm: 100
-  } 
+      monkey: 1,
+      monkeyPack: 10,
+      monkeyFarm: 100,
+    };
     const size = monkeyTypes[thing];
     const cash = gameState.cash;
     const cost = gameState[thing + "Cost"];
-    const array = gameState[thing+"s"];
+    const array = gameState[thing + "s"];
     let header = null;
 
     if (thing === "Monkey") {
@@ -220,7 +218,7 @@ export class MonkeyObject {
     this.threads = size;
     this.spawn(array);
   }
-  
+
   spawn(array) {
     console.log(this);
     array.push(this);
@@ -244,9 +242,9 @@ export class MonkeyObject {
     });
     const parent = document.getElementById(`monkeydiv`);
     parent.prepend(wrapper);
-    wrapper.appendChild(card);    
+    wrapper.appendChild(card);
   }
-  
+
   renderCard() {
     const type = this.type;
     const id = this.id;
@@ -272,8 +270,8 @@ export class MonkeyObject {
   }
   updateCard() {
     document.getElementById(`${this.type}-${this.id}`).innerHTML =
-    this.renderCard();
-  } 
+      this.renderCard();
+  }
   renderOutput() {
     const outputs = this.outputs;
     let html = "";
@@ -295,7 +293,6 @@ export class MonkeyObject {
   }
 
   monkeyName() {
-    
     const monkeyNames = gameState.monkeys.map((i) => i.name);
     let name;
     let namespace = adjectives.length * nouns.length;
@@ -314,6 +311,82 @@ export class MonkeyObject {
       tries++;
     } while (monkeyNames.includes(name));
     return name;
+  }
+  type() {
+    if (this.typing) return;
+    this.typing = true;
+    // Disable 'Type!' button
+    document.getElementById(`type-${this.type}-${this.id}`).disabled = true;
+    this.outputs = [];
 
+    const threads = this.threads;
+    let completed = 0;
+    let payoutSum = 0;
+    let oldHighScore = this.high_score;
+
+    // Multi-threaded typing logic
+    for (let i = 0; i < threads; i++) {
+      // Initialize what we've typed
+      let typed = 0;
+      this.outputs[i] = "";
+      // Do this every TYPE_TIME/this.speed
+      const interval = setInterval(
+        () => {
+          // Generates a number between 1-27 (for all caps alphabet plus space)
+          let rand = Math.floor(Math.random() * (ALPHABET.length - 1)) + 1;
+          // Only check int if the monkey has any upgrades, give the letter if int above this number
+          if (this.intelligence > 1 && rand < this.intelligence) {
+            this.outputs[i] += gameState.passage[typed];
+          } else {
+            this.outputs[i] += randomLetter();
+          }
+          document.getElementById(
+            `${object.type}-${object.id}-typebox`,
+          ).innerHTML = renderOutput(object.outputs);
+
+          typed++;
+          if (typed >= gameState.passage.length) {
+            clearInterval(interval);
+            // score this attempt
+            gameState.generations++;
+            object.latest_score = score(object, object.outputs[i]);
+            payoutSum +=
+              gameState.historicCash[gameState.historicCash.length - 1].payout;
+
+            if (object.latest_score > object.high_score) {
+              object.high_score = object.latest_score;
+              object.best_attempt = object.outputs[i];
+
+              if (object.high_score > gameState.topScore) {
+                gameState.topScore = object.high_score;
+                const tsm = document.getElementById("top-scoring-monkey");
+                tsm.innerHTML = `Top Scoring Monkey: ${object.name}`;
+                tsm.style.display = "block";
+
+                gameState.bestPassage = [object.outputs[i]];
+
+                const bp = document.getElementById("best-passage");
+                bp.innerHTML = `<b>Best Passage:</b> ${renderOutput(gameState.bestPassage)}`;
+                bp.style.display = "block";
+              }
+            }
+
+            completed++;
+            if (completed >= threads) {
+              object.typing = false;
+              objectNotify(
+                object,
+                `${cashFormatter.format(payoutSum)}`,
+                "green",
+              );
+              if (object.high_score > oldHighScore)
+                objectNotify(object, "New High Score!");
+              updateCard(object);
+            }
+          }
+        },
+        TYPE_TIME / (object.speed * gameState.passage.length),
+      );
+    }
   }
 }
