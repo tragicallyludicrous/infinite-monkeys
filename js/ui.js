@@ -78,20 +78,19 @@ export function buttonUpdate() {
     monkeyFarmFlag,
   } = gameState;
 
-  const monkeyButton = document
-    .getElementById("buyMonkeyButton")
-    .querySelector("button");
+  const monkeyButton = document.getElementById("buyMonkeyButton");
   const buyAutoClickerButton = document.getElementById("buyAutoClickerButton");
   const buyMonkeyPackButton = document.getElementById("buyMonkeyPackButton");
   const buyMonkeyFarmButton = document.getElementById("buyMonkeyFarmButton");
 
   // --- MONKEY BUYING ---
-  monkeyButton.disabled = cash < monkeyCost;
+  monkeyButton.querySelector("button").disabled = cash < monkeyCost;
 
   if (
-    monkeyButton.innerHTML != `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
+    monkeyButton.querySelector("button").innerHTML != `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
   ) {
-    monkeyButton.innerHTML = `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
+    monkeyButton.querySelector("button").innerHTML = `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
+    
   }
 
   // --- AUTOCLICKER BUYING ---
