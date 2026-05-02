@@ -11,6 +11,7 @@ import {
   buyAutoClicker,
   buyMonkeyThing,
  } from "./buying.js"
+ import { MonkeyObject } from "./monkeys.js";
 
 // ====================================
 // --- Event Listeners ---
@@ -26,11 +27,11 @@ document
 
 document
   .getElementById("buyMonkeyPackButton")
-  .addEventListener("click", () => buyMonkeyThing("monkeyPack", 10));
+  .addEventListener("click", () => new MonkeyObject("monkeyPack", 10));
 
 document
   .getElementById("buyMonkeyFarmButton")
-  .addEventListener("click", () => buyMonkeyThing("monkeyFarm", 100));
+  .addEventListener("click", () => new MonkeyObject("monkeyFarm", 100));
 
 document
   .getElementById("updatePassageForm")

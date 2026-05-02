@@ -51,7 +51,6 @@ import {
   monkeyName,
   spawn,
   updateCard,
-  renderCard,
   objectType,
   renderOutput,
 } from "./monkeys.js";
