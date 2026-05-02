@@ -28,6 +28,12 @@ export const BASE_INT_COST = 10000;
 export const INT_BOOST_THRESHOLD = 250;
 export const INT_COST_MULTIPLIER = (1 + Math.sqrt(5)) / 2; // Phi
 
+export const monkeyTypes = {
+  monkey: 1,
+  monkeyPack: 10,
+  monkeyFarm: 100,
+};
+
 export const cashFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",

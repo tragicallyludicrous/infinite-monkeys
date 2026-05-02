@@ -6,12 +6,9 @@ import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
 import { HUDNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
-import { 
-  buyMonkey,
-  buyAutoClicker,
-  buyMonkeyThing,
- } from "./buying.js"
- import { MonkeyObject } from "./monkeys.js";
+import { buyMonkey, buyAutoClicker, buyMonkeyThing } from "./buying.js";
+import { MonkeyObject } from "./monkeys.js";
+import { renderPassages } from "./render.js";
 
 // ====================================
 // --- Event Listeners ---
@@ -57,6 +54,7 @@ if (DEVELOPER_MODE) {
 
 const mainLoop = window.setInterval(function () {
   gameState.ticks += 1;
+  renderPassages();
   flagSet();
   buttonUpdate();
   updateStats();

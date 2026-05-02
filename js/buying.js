@@ -47,13 +47,7 @@ import {
   yearFormatter,
 } from "./helpers.js";
 
-import {
-  monkeyName,
-  spawn,
-  updateCard,
-  objectType,
-  renderOutput,
-} from "./monkeys.js";
+import { monkeyName, updateCard, renderOutput } from "./monkeys.js";
 
 import { adjectives, nouns } from "./monkeynames.js";
 
