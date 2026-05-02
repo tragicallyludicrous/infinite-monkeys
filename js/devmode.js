@@ -2,7 +2,7 @@ import { gameState } from "./state.js";
 
 import { buyMonkey, buyMonkeyThing, buyAutoClicker } from "./buying.js";
 
-import { updateCard } from "./monkeys.js";
+import { updateCard, MonkeyObject } from "./monkeys.js";
 
 import { DEVELOPER_MODE } from "./config.js";
 
@@ -25,13 +25,13 @@ export function devModeActivate() {
 
   document
     .getElementById("dev-buy-monkey")
-    .addEventListener("click", () => devAddMonkey());
+    .addEventListener("click", () => devAddMonkeyObject("monkey"));
   document
     .getElementById("dev-buy-monkeyPack")
-    .addEventListener("click", () => devAddMonkeyPack());
+    .addEventListener("click", () => devAddMonkeyObject("monkeyPack"));
   document
     .getElementById("dev-buy-monkeyFarm")
-    .addEventListener("click", () => devAddMonkeyFarm());
+    .addEventListener("click", () => devAddMonkeyObject("monkeyFarm"));
   document
     .getElementById("dev-buy-autoClicker")
     .addEventListener("click", () => devAddAutoClicker());
@@ -42,20 +42,10 @@ export function devModeActivate() {
     .getElementById("dev-int-upgrade")
     .addEventListener("click", () => devAddInt());
 }
+function devAddMonkeyObject(object) {
 
-function devAddMonkey() {
-  gameState.cash += gameState.monkeyCost;
-  buyMonkey();
-}
-
-function devAddMonkeyPack() {
-  gameState.cash += gameState.monkeyPackCost;
-  buyMonkeyThing("monkeyPack", 10);
-}
-
-function devAddMonkeyFarm() {
-  gameState.cash += gameState.monkeyFarmCost;
-  buyMonkeyThing("monkeyFarm", 100);
+  gameState.cash += gameState[object + "Cost"];
+  new MonkeyObject(object);
 }
 
 function devAddAutoClicker() {
@@ -66,11 +56,11 @@ function devAddAutoClicker() {
 function devAddSpeed() {
   for (let i = 0; i < gameState.monkeys.length; i++) {
     gameState.monkeys[i].speed++;
-    updateCard(gameState.monkeys[i]);
+    gameState.monkeys[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyPacks.length; i++) {
     gameState.monkeyPacks[i].speed++;
-    updateCard(gameState.monkeyPacks[i]);
+    gameState.monkeyPacks[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyFarms.length; i++) {
     gameState.monkeyFarms[i].speed++;
@@ -81,14 +71,14 @@ function devAddSpeed() {
 function devAddInt() {
   for (let i = 0; i < gameState.monkeys.length; i++) {
     gameState.monkeys[i].intelligence++;
-    updateCard(gameState.monkeys[i]);
+    gameState.monkeys[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyPacks.length; i++) {
     gameState.monkeyPacks[i].intelligence++;
-    updateCard(gameState.monkeyPacks[i]);
+    gameState.monkeyPacks[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyFarms.length; i++) {
     gameState.monkeyFarms[i].intelligence++;
-    updateCard(gameState.monkeyFarms[i]);
+    gameState.monkeyFarms[i].updateCard();
   }
 }
