@@ -1,11 +1,25 @@
 import { gameState } from "./state.js";
 
-import { buySpeedBooster, buyIntBooster } from "./buying.js";
+import {
+  randomWord,
+  randomLetter,
+  score,
+  payoutLog,
+  cashFormatter,
+} from "./helpers.js";
 
-import { randomWord, randomLetter, score, payoutLog } from "./helpers.js";
-import { renderSingleOutput } from "./render.js";
+import {
+  renderSingleOutput,
+  createCard,
+  updateCardScores,
+  updateCardStats,
+} from "./render.js";
 
-import { monkeyTypes } from "./config.js";
+import {
+  INT_COST_MULTIPLIER,
+  monkeyTypes,
+  SPEED_COST_MULTIPLIER,
+} from "./config.js";
 
 import {
   ALPHABET,
@@ -16,7 +30,6 @@ import {
   TYPE_TIME,
   PAYOUT_BASE,
   SCORE_MULTPLIER,
-  cashFormatter,
 } from "./config.js";
 
 import { adjectives, nouns } from "./monkeynames.js";
@@ -48,25 +61,6 @@ export function monkeyName() {
   return name;
 }
 
-export function renderOutput(outputs) {
-  let html = "";
-  for (let i = 0; i < outputs.length; i++) {
-    let styledOutput = "";
-    for (let j = 0; j < gameState.passage.length; j++) {
-      if (outputs[i][j] == gameState.passage[j]) {
-        styledOutput += `<span class="correct">${outputs[i][j]}</span>`;
-      } else if (outputs[i][j] == undefined) {
-        break;
-      } else {
-        styledOutput += `<span>${outputs[i][j]}</span>`;
-      }
-    }
-    html += `<br /> ${styledOutput}`;
-  }
-
-  return html;
-}
-
 // ====================================
 // ---  CORE MONKEY OBJECT ---
 // ====================================
@@ -74,8 +68,6 @@ export function renderOutput(outputs) {
 export class MonkeyObject {
   constructor(thing) {
     const size = monkeyTypes[thing];
-    const cash = gameState.cash;
-    const cost = gameState[thing + "Cost"];
     const array = gameState[thing + "s"];
     let header = null;
 
@@ -102,50 +94,27 @@ export class MonkeyObject {
     this.typing = false;
     this.typingProgress = 0;
     this.threads = size;
-    this.spawn(array);
-  }
-
-  spawn(array) {
     array.push(this);
-
-    const { type, id } = this;
-
-    const wrapper = document.createElement("div");
-    const card = document.createElement("div");
-
-    wrapper.id = `${type}-wrapper-${id}`;
-    wrapper.className = `${type}-wrapper`;
-    card.className = `${type}-card`;
-    card.id = `${type}-${id}`;
-    card.addEventListener("click", (event) => {
-      if (event.target.id === `type-${type}-${this.id}`) {
-        this.soliloquize();
-      } else if (event.target.id === `speed-up-${type}-${this.id}`) {
-        buySpeedBooster(this);
-      } else if (event.target.id === `int-up-${type}-${this.id}`) {
-        buyIntBooster(this);
-      }
-    });
-    const parent = document.getElementById(`monkeydiv`);
-    parent.prepend(wrapper);
-    wrapper.appendChild(card);
   }
 
-  static buy(thing) {
-    if (gameState.cash > gameState[thing + "Cost"]) {
-      gameState.cash -= gameState[thing + "Cost"];
-      new MonkeyObject(thing);
+  static buy(thing, dev = false) {
+    if (!dev) {
+      if (gameState.cash > gameState[thing + "Cost"]) {
+        gameState.cash -= gameState[thing + "Cost"];
+        const newMonkey = new MonkeyObject(thing);
+        createCard(newMonkey);
+      }
+    } else {
+      const newMonkey = new MonkeyObject(thing);
+      createCard(newMonkey);
     }
   }
 
   typeOnePassage() {
     let passageAttempt = "";
     for (let i = 0; i < gameState.passage.length; i++) {
-      if (this.intelligence > 1) {
-        const rand = Math.floor(Math.random() * (ALPHABET.length - 1) + 1);
-        if (this.intelligence > rand) {
-          passageAttempt += gameState.passage[i];
-        }
+      if (Math.random() * ALPHABET.length < this.intelligence) {
+        passageAttempt += gameState.passage[i];
       } else {
         passageAttempt += randomLetter();
       }
@@ -162,21 +131,23 @@ export class MonkeyObject {
   score(output) {
     // if a correct letter is next to another correct letter, its worth an extra point, compounding.
     let streak = 0;
+    let streakHigh = false;
     let score = 0;
 
     for (let i = 0; i < output.length; i++) {
-      console.log(score);
       if (output[i] == gameState.passage[i]) {
         streak++;
         score += streak;
         if (streak > this.bestStreak) {
           this.bestStreak = streak;
-          objectNotify(this, `New Best Streak! ${streak}`);
+          streakHigh = true;
         }
       } else {
         streak = 0;
       }
     }
+
+    if (streakHigh) objectNotify(this, `New Best Streak! ${this.bestStreak}`);
 
     if (score > this.highScore) {
       this.highScore = score;
@@ -202,8 +173,6 @@ export class MonkeyObject {
 
     this.typingProgress = 0;
 
-    // Disable 'Type!' button
-    document.getElementById(`type-${type}-${id}`).disabled = true;
     this.outputs = [];
 
     // Pre-type the passages all at once
@@ -223,9 +192,6 @@ export class MonkeyObject {
       const scores = this.outputs.map((o) => this.score(o));
       const localHighScore = Math.max(scores);
 
-      // debug
-      console.log("scores: " + scores);
-
       const totalPayout = scores
         .map((s) => this.payout(s))
         .reduce((acc, payout) => acc + payout, 0);
@@ -236,8 +202,6 @@ export class MonkeyObject {
 
       objectNotify(this, `${cashFormatter.format(totalPayout)}`, "green");
 
-      document.getElementById(`type-${type}-${id}`).disabled = false;
-
       if (localHighScore > this.highScore) {
         objectNotify(this, "New High Score!");
         this.highScore = localHighScore;
@@ -245,7 +209,22 @@ export class MonkeyObject {
           gameState.topScore = localHighScore;
           gameState.topScoringMonkey = this;
         }
+        updateCardScores(this);
       }
     }, TYPE_TIME / speed);
+  }
+
+  buySpeedBooster(dev = false) {
+    if (!dev) gameState.cash -= this.speedBoosterCost;
+    this.speedBoosterCost *= SPEED_COST_MULTIPLIER;
+    this.speed++;
+    updateCardStats(this);
+  }
+
+  buyIntBooster(dev = false) {
+    if (!dev) gameState.cash -= this.intBoosterCost;
+    this.intBoosterCost *= INT_COST_MULTIPLIER;
+    this.intelligence++;
+    updateCardStats(this);
   }
 }

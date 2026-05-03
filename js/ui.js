@@ -1,12 +1,16 @@
 import { gameState } from "./state.js";
-import { cashFormatter } from "./config.js";
 import {
   BASE_AUTOCLICKER_COST,
   BASE_MONKEY_COST,
   MONKEY_COST_MULTIPLIER,
   AUTOCLICKER_COST_MULTIPLIER,
 } from "./config.js";
-import { secondsPerTick, ETAtoString, cashPerSec } from "./helpers.js";
+import {
+  secondsPerTick,
+  ETAtoString,
+  cashPerSec,
+  cashFormatter,
+} from "./helpers.js";
 
 // ====================================
 // ---  UI Updates ---
@@ -87,10 +91,11 @@ export function buttonUpdate() {
   monkeyButton.querySelector("button").disabled = cash < monkeyCost;
 
   if (
-    monkeyButton.querySelector("button").innerHTML != `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
+    monkeyButton.querySelector("button").innerHTML !=
+    `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
   ) {
-    monkeyButton.querySelector("button").innerHTML = `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
-    
+    monkeyButton.querySelector("button").innerHTML =
+      `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
   }
 
   // --- AUTOCLICKER BUYING ---

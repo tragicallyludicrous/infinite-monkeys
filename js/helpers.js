@@ -36,25 +36,6 @@ export function randomLetter() {
   return ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
 }
 
-// Picker function for Autoclickers
-export function randomObject() {
-  // Only pick objects that aren't typing or already targeted
-  const available = getAllMonkeys()
-    .filter((m) => !m.typing)
-    .filter((m) => !gameState.autoClickerTargets.includes(m));
-
-  // Prioritize the object type with the most parallel monkeys
-  const maxThreads = Math.max(...available.map((m) => m.threads));
-  const best_available = available.filter((m) => m.threads === maxThreads);
-  // Choose one of those at random
-  const chosen_object =
-    best_available[Math.floor(Math.random() * best_available.length)];
-
-  gameState.autoClickerTargets.push(chosen_object);
-
-  return chosen_object;
-}
-
 export function randomWord(source) {
   return source[Math.floor(Math.random() * source.length)];
 }
@@ -219,3 +200,15 @@ export function getAllMonkeys() {
 
   return allMonkeys;
 }
+
+export function getTotalMonkeys() {
+  return Object.keys(monkeyTypes).reduce(
+    (acc, type) => acc + gameState[type + "s"].length * monkeyTypes[type],
+    0,
+  );
+}
+
+export const cashFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});

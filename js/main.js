@@ -1,14 +1,13 @@
 import { gameState } from "./state.js";
-import { runAutoClickers } from "./clickers.js";
+import { AutoClicker } from "./clickers.js";
 import { checkWin, buttonUpdate, updateStats } from "./ui.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
-import { HUDNotify } from "./notifications.js";
+import { hudNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
-import { buyAutoClicker } from "./buying.js";
 import { MonkeyObject } from "./monkeys.js";
-import { renderPassages, renderCards } from "./render.js";
+import { renderPassages, updateCards } from "./render.js";
 
 // ====================================
 // --- Event Listeners ---
@@ -16,19 +15,19 @@ import { renderPassages, renderCards } from "./render.js";
 
 document
   .getElementById("buyMonkeyButton")
-  .addEventListener("click", () => MonkeyObject.buy("monkey", 1));
+  .addEventListener("click", () => MonkeyObject.buy("monkey"));
 
 document
   .getElementById("buyAutoClickerButton")
-  .addEventListener("click", () => buyAutoClicker());
+  .addEventListener("click", () => AutoClicker.buy());
 
 document
   .getElementById("buyMonkeyPackButton")
-  .addEventListener("click", () => MonkeyObject.buy("monkeyPack", 10));
+  .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
 
 document
   .getElementById("buyMonkeyFarmButton")
-  .addEventListener("click", () => MonkeyObject.buy("monkeyFarm", 100));
+  .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
 
 document
   .getElementById("updatePassageForm")
@@ -40,7 +39,7 @@ document
       gameState.passage = newPassage;
       document.getElementById("change-passage").value = "";
     } else {
-      HUDNotify("New passage must be at least as long as old one!", "maroon");
+      hudNotify("New passage must be at least as long as old one!", "maroon");
     }
   });
 
@@ -59,6 +58,6 @@ const mainLoop = window.setInterval(function () {
   flagSet();
   buttonUpdate();
   updateStats();
-  runAutoClickers();
+  AutoClicker.runClickers();
   checkWin();
 }, TICK_INTERVAL);
