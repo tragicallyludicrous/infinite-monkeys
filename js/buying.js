@@ -47,7 +47,7 @@ import {
   yearFormatter,
 } from "./helpers.js";
 
-import { monkeyName, updateCard, renderOutput } from "./monkeys.js";
+import { monkeyName, renderOutput } from "./monkeys.js";
 
 import { adjectives, nouns } from "./monkeynames.js";
 
@@ -56,33 +56,6 @@ import { HUDNotify } from "./notifications.js";
 // ====================================
 // --- Buying Stuff ---
 // ====================================
-
-export function buyMonkey() {
-  const { cash, monkeyCost, monkeys } = gameState;
-  if (cash >= monkeyCost) {
-    gameState.cash -= monkeyCost;
-    const monkey = {
-      header: "Monkey",
-      type: "monkey",
-      id: monkeys.length + 1,
-      name: monkeyName(),
-      speed: 1,
-      speedBoosterCost: BASE_SPEED_COST,
-      intBoosterCost: BASE_INT_COST,
-      intelligence: 1,
-      typewriter: "basic",
-      outputs: [],
-      latestScore: 0,
-      highScore: 0,
-      bestStreak: 0,
-      bestAttempt: "",
-      typing: false,
-      threads: 1,
-    };
-    gameState.monkeys.push(monkey);
-    spawn(monkey);
-  }
-}
 
 export function buyAutoClicker() {
   const { cash, autoClickerCost, autoClickers } = gameState;
@@ -107,7 +80,6 @@ export function buySpeedBooster(object) {
     gameState.cash -= object.speedBoosterCost;
     object.speed++;
     object.speedBoosterCost *= SPEED_COST_MULTIPLIER;
-    updateCard(object);
   }
 }
 
@@ -117,36 +89,5 @@ export function buyIntBooster(object) {
     gameState.cash -= object.intBoosterCost;
     object.intelligence++;
     object.intBoosterCost *= INT_COST_MULTIPLIER;
-    updateCard(object);
-  }
-}
-
-export function buyMonkeyThing(thing, size) {
-  const cash = gameState.cash;
-  const cost = gameState[thing + "Cost"];
-  const array = gameState[thing + "s"];
-
-  if (cash >= cost) {
-    gameState.cash -= cost;
-    const newUnit = {
-      header: thing,
-      type: thing,
-      id: array.length + 1,
-      name: `${thing} ${monkeyName()}`,
-      speed: 1,
-      speedBoosterCost: BASE_SPEED_COST * (size * 0.8),
-      intBoosterCost: BASE_INT_COST * (size * 0.8),
-      intelligence: 1,
-      typewriter: "basic",
-      outputs: [],
-      latestScore: 0,
-      highScore: 0,
-      bestStreak: 0,
-      bestAttempt: "",
-      typing: false,
-      threads: size,
-    };
-    array.push(newUnit);
-    spawn(newUnit);
   }
 }

@@ -1,8 +1,8 @@
 import { gameState } from "./state.js";
 
-import { buyMonkey, buyMonkeyThing, buyAutoClicker } from "./buying.js";
+import { buyAutoClicker } from "./buying.js";
 
-import { updateCard, MonkeyObject } from "./monkeys.js";
+import { MonkeyObject } from "./monkeys.js";
 
 import { DEVELOPER_MODE } from "./config.js";
 
@@ -43,8 +43,6 @@ export function devModeActivate() {
     .addEventListener("click", () => devAddInt());
 }
 function devAddMonkeyObject(object) {
-
-  gameState.cash += gameState[object + "Cost"];
   new MonkeyObject(object);
 }
 
@@ -56,29 +54,23 @@ function devAddAutoClicker() {
 function devAddSpeed() {
   for (let i = 0; i < gameState.monkeys.length; i++) {
     gameState.monkeys[i].speed++;
-    gameState.monkeys[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyPacks.length; i++) {
     gameState.monkeyPacks[i].speed++;
-    gameState.monkeyPacks[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyFarms.length; i++) {
     gameState.monkeyFarms[i].speed++;
-    updateCard(gameState.monkeyFarms[i]);
   }
 }
 
 function devAddInt() {
   for (let i = 0; i < gameState.monkeys.length; i++) {
     gameState.monkeys[i].intelligence++;
-    gameState.monkeys[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyPacks.length; i++) {
     gameState.monkeyPacks[i].intelligence++;
-    gameState.monkeyPacks[i].updateCard();
   }
   for (let i = 0; i < gameState.monkeyFarms.length; i++) {
     gameState.monkeyFarms[i].intelligence++;
-    gameState.monkeyFarms[i].updateCard();
   }
 }
