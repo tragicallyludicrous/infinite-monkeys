@@ -34,7 +34,6 @@ export class AutoClicker {
     );
     const rect = button.getBoundingClientRect();
     const box = document.getElementById("autoclicker-" + this.id);
-    console.log(this.id);
 
     box.style.top = rect.top + window.scrollY - 2 + "px";
     box.style.left = rect.left + window.scrollX - 2 + "px";
