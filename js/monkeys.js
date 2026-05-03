@@ -48,36 +48,6 @@ export function monkeyName() {
   return name;
 }
 
-export function updateCard(object) {
-  document.getElementById(`${object.type}-${object.id}`).innerHTML =
-    renderCard(object);
-}
-
-export function renderCard(object) {
-  const type = object.type;
-  const intDisplay = gameState.intBoosterFlag ? "" : "display:none";
-  const twDisplay = gameState.typewriterUpgradeFlag ? "" : "display:none";
-  const suDisplay = !gameState.speedBoosterFlag ? "display:none" : "";
-  const iuDisplay = !gameState.intBoosterFlag ? "display:none" : "";
-  const suButton = gameState.cash < object.speedBoosterCost ? "disabled" : "";
-  const iuButton = gameState.cash < object.intBoosterCost ? "disabled" : "";
-  const typeButton = object.typing ? "disabled" : "";
-
-  return `
-        <p><i>${object.header}</i></p>
-        <h3>${object.name}</h3>
-        <p>Speed: ${object.speed}</p>
-        <button id="speed-up-${object.type}-${object.id}" style="${suDisplay}" ${suButton}>Speed Booster: ${cashFormatter.format(object.speedBoosterCost)}</button>
-        <p style="${intDisplay}">Intelligence: ${object.intelligence}</p>
-        <button id="int-up-${object.type}-${object.id}" style="${iuDisplay}" ${iuButton}>Intelligence Booster: ${cashFormatter.format(object.intBoosterCost)}</button>
-        <p style="${twDisplay}">Typewriter: ${object.typewriter}</p>
-        <p>High Score: ${object.highScore}</p>
-        <p>Best Attempt: ${renderOutput([object.bestAttempt])}</p>
-        <button id="type-${type}-${object.id}" ${typeButton}>Type!</button>
-        <p id="${object.type}-${object.id}-typebox">${renderOutput(object.outputs)}</p>
-    `;
-}
-
 export function renderOutput(outputs) {
   let html = "";
   for (let i = 0; i < outputs.length; i++) {
@@ -147,7 +117,6 @@ export class MonkeyObject {
     wrapper.className = `${type}-wrapper`;
     card.className = `${type}-card`;
     card.id = `${type}-${id}`;
-    card.innerHTML = this.renderCard();
     card.addEventListener("click", (event) => {
       if (event.target.id === `type-${type}-${this.id}`) {
         this.soliloquize();
@@ -162,47 +131,11 @@ export class MonkeyObject {
     wrapper.appendChild(card);
   }
 
-  renderCard() {
-    const {
-      type,
-      id,
-      speedBoosterCost,
-      intBoosterCost,
-      header,
-      name,
-      speed,
-      intelligence,
-      highScore,
-      bestAttempt,
-      typing,
-      renderOutput,
-    } = this;
-
-    const { intBoosterFlag, speedBoosterFlag, cash } = gameState;
-
-    const intDisplay = intBoosterFlag ? "" : "display:none";
-    const suDisplay = !speedBoosterFlag ? "display:none" : "";
-    const iuDisplay = !intBoosterFlag ? "display:none" : "";
-    const suButton = cash < speedBoosterCost ? "disabled" : "";
-    const iuButton = cash < intBoosterCost ? "disabled" : "";
-    const typeButton = typing ? "disabled" : "";
-
-    return `
-          <p><i>${header}</i></p>
-          <h3>${name}</h3>
-          <p>Speed: ${speed}</p>
-          <button id="speed-up-${type}-${id}" style="${suDisplay}" ${suButton}>Speed Booster: ${cashFormatter.format(speedBoosterCost)}</button>
-          <p style="${intDisplay}">Intelligence: ${intelligence}</p>
-          <button id="int-up-${type}-${id}" style="${iuDisplay}" ${iuButton}>Intelligence Booster: ${cashFormatter.format(intBoosterCost)}</button>
-          <p>High Score: ${highScore}</p>
-          <p>Best Attempt: ${renderSingleOutput(bestAttempt)}</p>
-          <button id="type-${type}-${id}" ${typeButton}>Type!</button>
-          <p id="${type}-${id}-typebox"></p>
-      `;
-  }
-  updateCard() {
-    document.getElementById(`${this.type}-${this.id}`).innerHTML =
-      this.renderCard();
+  static buy(thing) {
+    if (gameState.cash > gameState[thing + "Cost"]) {
+      gameState.cash -= gameState[thing + "Cost"];
+      new MonkeyObject(thing);
+    }
   }
 
   typeOnePassage() {
@@ -212,10 +145,10 @@ export class MonkeyObject {
         const rand = Math.floor(Math.random() * (ALPHABET.length - 1) + 1);
         if (this.intelligence > rand) {
           passageAttempt += gameState.passage[i];
-        } 
-      } else {
-          passageAttempt += randomLetter();
         }
+      } else {
+        passageAttempt += randomLetter();
+      }
     }
     return passageAttempt;
   }
@@ -247,6 +180,7 @@ export class MonkeyObject {
 
     if (score > this.highScore) {
       this.highScore = score;
+      this.bestAttempt = output;
     }
     if (score > gameState.topScore) {
       gameState.topScore = score;
@@ -261,13 +195,7 @@ export class MonkeyObject {
   }
 
   soliloquize() {
-    const {
-      typing,
-      typingProgress,
-      type,
-      id,
-      speed,
-    } = this;
+    const { typing, typingProgress, type, id, speed } = this;
     if (this.typing) return;
 
     this.typing = true;
@@ -292,7 +220,7 @@ export class MonkeyObject {
     setTimeout(() => {
       clearInterval(interval);
       this.typing = false;
-      const scores = this.outputs.map(o => this.score(o));
+      const scores = this.outputs.map((o) => this.score(o));
       const localHighScore = Math.max(scores);
 
       // debug
@@ -312,7 +240,6 @@ export class MonkeyObject {
 
       if (localHighScore > this.highScore) {
         objectNotify(this, "New High Score!");
-        this.updateCard(this);
         this.highScore = localHighScore;
         if (localHighScore > gameState.topScore) {
           gameState.topScore = localHighScore;

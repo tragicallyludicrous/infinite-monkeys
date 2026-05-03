@@ -6,7 +6,7 @@ import {
 } from "./config.js";
 
 import { objectNotify } from "./notifications.js";
-
+import { monkeyTypes } from "./config.js";
 import { gameState } from "./state.js";
 
 // ====================================
@@ -38,14 +38,8 @@ export function randomLetter() {
 
 // Picker function for Autoclickers
 export function randomObject() {
-  const all = [
-    ...gameState.monkeys,
-    ...gameState.monkeyPacks,
-    ...gameState.monkeyFarms,
-  ];
-
   // Only pick objects that aren't typing or already targeted
-  const available = all
+  const available = getAllMonkeys()
     .filter((m) => !m.typing)
     .filter((m) => !gameState.autoClickerTargets.includes(m));
 
@@ -214,4 +208,14 @@ export function ETAtoString() {
     }
   }
   return string;
+}
+
+export function getAllMonkeys() {
+  const allMonkeys = [];
+
+  for (let type in monkeyTypes) {
+    allMonkeys.push(...gameState[type + "s"]);
+  }
+
+  return allMonkeys;
 }

@@ -6,9 +6,9 @@ import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
 import { HUDNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
-import { buyMonkey, buyAutoClicker, buyMonkeyThing } from "./buying.js";
+import { buyAutoClicker } from "./buying.js";
 import { MonkeyObject } from "./monkeys.js";
-import { renderPassages } from "./render.js";
+import { renderPassages, renderCards } from "./render.js";
 
 // ====================================
 // --- Event Listeners ---
@@ -16,7 +16,7 @@ import { renderPassages } from "./render.js";
 
 document
   .getElementById("buyMonkeyButton")
-  .addEventListener("click", () => buyMonkey());
+  .addEventListener("click", () => MonkeyObject.buy("monkey", 1));
 
 document
   .getElementById("buyAutoClickerButton")
@@ -24,11 +24,11 @@ document
 
 document
   .getElementById("buyMonkeyPackButton")
-  .addEventListener("click", () => new MonkeyObject("monkeyPack", 10));
+  .addEventListener("click", () => MonkeyObject.buy("monkeyPack", 10));
 
 document
   .getElementById("buyMonkeyFarmButton")
-  .addEventListener("click", () => new MonkeyObject("monkeyFarm", 100));
+  .addEventListener("click", () => MonkeyObject.buy("monkeyFarm", 100));
 
 document
   .getElementById("updatePassageForm")
@@ -54,6 +54,7 @@ if (DEVELOPER_MODE) {
 
 const mainLoop = window.setInterval(function () {
   gameState.ticks += 1;
+  updateCards();
   renderPassages();
   flagSet();
   buttonUpdate();
