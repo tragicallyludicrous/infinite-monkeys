@@ -2,6 +2,27 @@ import { gameState } from "./state.js";
 import { monkeyTypes, BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
 import { getAllMonkeys, cashFormatter } from "./helpers.js";
 
+// Only render onscreen monkeys
+const visibleWrappers = new Set(); // stores wrapper element IDs
+
+const visibilityObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        visibleWrappers.add(entry.target.id);
+      } else {
+        visibleWrappers.delete(entry.target.id);
+      }
+    }
+  },
+  {
+    // A card is considered "visible" as soon as any part of it enters
+    // the viewport. threshold: 0 means the callback fires the moment
+    // even one pixel is visible.
+    threshold: 0,
+  },
+);
+
 export function createCard(monkey) {
   const { type, id } = monkey;
   const prefix = `${type}-${id}`;
@@ -30,6 +51,12 @@ export function createCard(monkey) {
   const parent = document.getElementById(`monkeydiv`);
   parent.prepend(wrapper);
   wrapper.appendChild(card);
+  visibilityObserver.observe(wrapper);
+
+  const outputSpans = Array.from(
+    { length: monkey.threads },
+    (_, i) => `<span id="${prefix}-output-${i}"></span><br/>`,
+  ).join("");
 
   document.getElementById(`${prefix}`).innerHTML = `
           <p><i>${monkey.header}</i></p>
@@ -47,7 +74,7 @@ export function createCard(monkey) {
           
           <p><button id="${prefix}-soliloquize">Soliloquize!</button></p>
           
-          <p id="${prefix}-typebox"></p>`;
+          <div id="${prefix}-typebox">${outputSpans}</div>`;
 
   monkey.elements = {
     // Speed
@@ -117,15 +144,19 @@ export function renderOutputs(monkey) {
 
 export function renderPassages() {
   for (let m of getAllMonkeys()) {
+    if (!m.typing) continue;
+    if (m.typingProgress === m.lastRenderedProgress) continue;
+    const wrapperId = `${m.type}-${m.id}-wrapper`;
+    if (!visibleWrappers.has(wrapperId)) continue;
     document.getElementById(`${m.type}-${m.id}-typebox`).innerHTML =
       renderOutputs(m);
+    m.lastRenderedProgress = m.typingProgress;
   }
 }
 
 export function spawnAutoClicker(autoClicker) {
   const box = document.createElement("div");
   box.className = "autoClicker";
-  console.log(autoClicker);
   box.id = "autoclicker-" + autoClicker.id;
   box.style.backgroundColor = autoClicker.color;
   document.body.appendChild(box);
