@@ -24,7 +24,7 @@
 
 #### `AUTOCLICKER LOGIC` was fun to write. I had to find ways to determine if its target was available to click, if another autoclicker had already targeted it, then send it to the type button with another inscrutable bit of JS syntax, `getBoundingClientRect()`. Some references here to autoClickers having their own speed, but it never felt like they needed to be faster or slower. Maybe in future versions. `runAutoClickers` is what we call in the main loop to keep these going every tick.
 
-#### `UNLOCK FLAGS` sends notifications when milestones/unlocks happen. Leans heavily on `HUDNotify` which is described later.
+#### `UNLOCK FLAGS` sends notifications when milestones/unlocks happen. Leans heavily on `hudNotify` which is described later.
 
 #### `UI UPDATES` is three big functions that run every tick to keep the UI fresh. `updateStats` refreshes global stats. `buttonUpdate` makes sure buttons are greyed out/available depending on cash reserves/unlock flags. And `checkWin` checks to see if our win condition has been met, and if so gives us our win screen.
 

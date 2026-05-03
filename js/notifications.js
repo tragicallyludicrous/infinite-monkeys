@@ -3,8 +3,9 @@
 // ====================================
 
 export function objectNotify(object, message, color = "cornflowerblue") {
+  const prefix = `${object.type}-${object.id}`;
   const toast = document.createElement("span");
-  const parent = document.getElementById(`${object.type}-wrapper-${object.id}`);
+  const parent = document.getElementById(`${prefix}-wrapper`);
   const existingToasts = parent.querySelectorAll(".toast").length;
   const offset = existingToasts * 50;
   toast.style.top = `calc(25% + ${offset}px)`;
@@ -23,7 +24,7 @@ export function objectNotify(object, message, color = "cornflowerblue") {
   }, 2000);
 }
 
-export function HUDNotify(message, color = "cornflowerblue") {
+export function hudNotify(message, color = "cornflowerblue") {
   const toast = document.createElement("span");
   const parent = document.getElementById("hud");
   const existingToasts = parent.querySelectorAll(".toast").length;

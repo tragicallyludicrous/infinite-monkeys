@@ -1,10 +1,10 @@
 import { gameState } from "./state.js";
 
-import { buyAutoClicker } from "./buying.js";
-
 import { MonkeyObject } from "./monkeys.js";
 
 import { DEVELOPER_MODE } from "./config.js";
+import { getAllMonkeys } from "./helpers.js";
+import { AutoClicker } from "./clickers.js";
 
 // ====================================
 // --- DEV MODE ---
@@ -25,16 +25,16 @@ export function devModeActivate() {
 
   document
     .getElementById("dev-buy-monkey")
-    .addEventListener("click", () => devAddMonkeyObject("monkey"));
+    .addEventListener("click", () => MonkeyObject.buy("monkey", true));
   document
     .getElementById("dev-buy-monkeyPack")
-    .addEventListener("click", () => devAddMonkeyObject("monkeyPack"));
+    .addEventListener("click", () => MonkeyObject.buy("monkeyPack", true));
   document
     .getElementById("dev-buy-monkeyFarm")
-    .addEventListener("click", () => devAddMonkeyObject("monkeyFarm"));
+    .addEventListener("click", () => MonkeyObject.buy("monkeyFarm", true));
   document
     .getElementById("dev-buy-autoClicker")
-    .addEventListener("click", () => devAddAutoClicker());
+    .addEventListener("click", () => AutoClicker.buy(true));
   document
     .getElementById("dev-speed-upgrade")
     .addEventListener("click", () => devAddSpeed());
@@ -42,35 +42,15 @@ export function devModeActivate() {
     .getElementById("dev-int-upgrade")
     .addEventListener("click", () => devAddInt());
 }
-function devAddMonkeyObject(object) {
-  new MonkeyObject(object);
-}
-
-function devAddAutoClicker() {
-  gameState.cash += gameState.autoClickerCost;
-  buyAutoClicker();
-}
 
 function devAddSpeed() {
-  for (let i = 0; i < gameState.monkeys.length; i++) {
-    gameState.monkeys[i].speed++;
-  }
-  for (let i = 0; i < gameState.monkeyPacks.length; i++) {
-    gameState.monkeyPacks[i].speed++;
-  }
-  for (let i = 0; i < gameState.monkeyFarms.length; i++) {
-    gameState.monkeyFarms[i].speed++;
+  for (let i of getAllMonkeys()) {
+    i.buySpeedBooster(true);
   }
 }
 
 function devAddInt() {
-  for (let i = 0; i < gameState.monkeys.length; i++) {
-    gameState.monkeys[i].intelligence++;
-  }
-  for (let i = 0; i < gameState.monkeyPacks.length; i++) {
-    gameState.monkeyPacks[i].intelligence++;
-  }
-  for (let i = 0; i < gameState.monkeyFarms.length; i++) {
-    gameState.monkeyFarms[i].intelligence++;
+  for (let i of getAllMonkeys()) {
+    i.buyIntBooster(true);
   }
 }

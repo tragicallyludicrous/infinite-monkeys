@@ -33,8 +33,3 @@ export const monkeyTypes = {
   monkeyPack: 10,
   monkeyFarm: 100,
 };
-
-export const cashFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
