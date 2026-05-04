@@ -1,6 +1,7 @@
 import { gameState } from "./state.js";
 import { monkeyTypes, BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
 import { getAllMonkeys, cashFormatter } from "./helpers.js";
+import { prevState } from "./main.js";
 
 // Only render onscreen monkeys
 const visibleWrappers = new Set(); // stores wrapper element IDs
@@ -144,7 +145,6 @@ export function renderOutputs(monkey) {
 
 export function renderPassages() {
   for (let m of getAllMonkeys()) {
-    if (!m.typing) continue;
     if (m.typingProgress === m.lastRenderedProgress) continue;
     const wrapperId = `${m.type}-${m.id}-wrapper`;
     if (!visibleWrappers.has(wrapperId)) continue;
@@ -204,6 +204,17 @@ export function updateCardFlags() {
     const el = m.elements;
     el.speedDisplay.style.display = gameState.speedBoosterFlag ? "" : "none";
     el.intDisplay.style.display = gameState.intBoosterFlag ? "" : "none";
+  }
+}
+
+export function updateGameStats() {
+  const { bestPassage } = gameState;
+
+  if (bestPassage) document.getElementById("best-passage").style.display = "";
+
+  if (bestPassage != prevState.bestPassage) {
+    document.getElementById("best-passage").innerHTML =
+      "Best Passage: " + renderSingleOutput(bestPassage);
   }
 }
 

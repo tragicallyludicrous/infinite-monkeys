@@ -138,26 +138,17 @@ export function yearFormatter(years) {
 
 export function monkeyProb(object) {
   const pLuck = 1 / ALPHABET.length;
-  const pInt = (object.intelligence - 1) / (ALPHABET.length - 1);
-  const pNoInt =
-    (ALPHABET.length - 1 - object.intelligence) / (ALPHABET.length - 1);
-  const probability = (pInt + pNoInt * pLuck) ** gameState.passage.length;
-  return probability * object.threads;
+  const pInt = (object.intelligence - 1) / ALPHABET.length;
+  return (pInt + (1 - pInt) * pLuck) ** gameState.passage.length;
 }
 
 export function ETAtoString() {
   if (gameState.generations === 0) return; // no data yet, skip ETA
 
-  let probability = 0;
-  gameState.monkeys.forEach((object) => {
-    probability += monkeyProb(object);
-  });
-  gameState.monkeyPacks.forEach((object) => {
-    probability += monkeyProb(object);
-  });
-  gameState.monkeyFarms.forEach((object) => {
-    probability += monkeyProb(object);
-  });
+  const probability = getAllMonkeys().reduce(
+    (acc, object) => acc + monkeyProb(object),
+    0,
+  );
 
   const requiredGenerations = 1 / probability;
   const genPerTick = gameState.generations / gameState.ticks;

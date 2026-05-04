@@ -1,32 +1,34 @@
 import { gameState } from "./state.js";
 import { AutoClicker } from "./clickers.js";
-import { checkWin, buttonUpdate, updateStats } from "./ui.js";
+import { checkWin, buttonUpdate, updateStats, initializeUI } from "./ui.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
 import { hudNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
 import { MonkeyObject } from "./monkeys.js";
-import { renderPassages, updateCards } from "./render.js";
+import { renderPassages, updateCards, updateGameStats } from "./render.js";
+
+initializeUI();
 
 // ====================================
 // --- Event Listeners ---
 // ====================================
 
 document
-  .getElementById("buyMonkeyButton")
+  .getElementById("buy-monkey-button")
   .addEventListener("click", () => MonkeyObject.buy("monkey"));
 
 document
-  .getElementById("buyAutoClickerButton")
+  .getElementById("buy-autoclicker-button")
   .addEventListener("click", () => AutoClicker.buy());
 
 document
-  .getElementById("buyMonkeyPackButton")
+  .getElementById("buy-monkeyPack-button")
   .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
 
 document
-  .getElementById("buyMonkeyFarmButton")
+  .getElementById("buy-monkeyFarm-button")
   .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
 
 document
@@ -50,6 +52,7 @@ document
 if (DEVELOPER_MODE) {
   devModeActivate();
 }
+export let prevState = {};
 
 const mainLoop = window.setInterval(function () {
   gameState.ticks += 1;
@@ -58,6 +61,10 @@ const mainLoop = window.setInterval(function () {
   flagSet();
   buttonUpdate();
   updateStats();
+  updateGameStats();
   AutoClicker.runClickers();
   checkWin();
+  prevState = {
+    bestPassage: gameState.bestPassage,
+  };
 }, TICK_INTERVAL);
