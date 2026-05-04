@@ -6,7 +6,7 @@ import {
 } from "./config.js";
 
 import { objectNotify } from "./notifications.js";
-
+import { monkeyTypes } from "./config.js";
 import { gameState } from "./state.js";
 
 // ====================================
@@ -36,31 +36,6 @@ export function randomLetter() {
   return ALPHABET[Math.floor(Math.random() * ALPHABET.length)];
 }
 
-// Picker function for Autoclickers
-export function randomObject() {
-  const all = [
-    ...gameState.monkeys,
-    ...gameState.monkeyPacks,
-    ...gameState.monkeyFarms,
-  ];
-
-  // Only pick objects that aren't typing or already targeted
-  const available = all
-    .filter((m) => !m.typing)
-    .filter((m) => !gameState.autoClickerTargets.includes(m));
-
-  // Prioritize the object type with the most parallel monkeys
-  const maxThreads = Math.max(...available.map((m) => m.threads));
-  const best_available = available.filter((m) => m.threads === maxThreads);
-  // Choose one of those at random
-  const chosen_object =
-    best_available[Math.floor(Math.random() * best_available.length)];
-
-  gameState.autoClickerTargets.push(chosen_object);
-
-  return chosen_object;
-}
-
 export function randomWord(source) {
   return source[Math.floor(Math.random() * source.length)];
 }
@@ -85,8 +60,8 @@ export function score(object, output) {
   }
 
   if (streak > 1) {
-    if (streak > object.best_streak) {
-      object.best_streak = streak;
+    if (streak > object.bestStreak) {
+      object.bestStreak = streak;
       objectNotify(object, `New Best Streak! ${streak}`);
     }
   }
@@ -163,26 +138,17 @@ export function yearFormatter(years) {
 
 export function monkeyProb(object) {
   const pLuck = 1 / ALPHABET.length;
-  const pInt = (object.intelligence - 1) / (ALPHABET.length - 1);
-  const pNoInt =
-    (ALPHABET.length - 1 - object.intelligence) / (ALPHABET.length - 1);
-  const probability = (pInt + pNoInt * pLuck) ** gameState.passage.length;
-  return probability * object.threads;
+  const pInt = (object.intelligence - 1) / ALPHABET.length;
+  return (pInt + (1 - pInt) * pLuck) ** gameState.passage.length;
 }
 
 export function ETAtoString() {
   if (gameState.generations === 0) return; // no data yet, skip ETA
 
-  let probability = 0;
-  gameState.monkeys.forEach((object) => {
-    probability += monkeyProb(object);
-  });
-  gameState.monkeyPacks.forEach((object) => {
-    probability += monkeyProb(object);
-  });
-  gameState.monkeyFarms.forEach((object) => {
-    probability += monkeyProb(object);
-  });
+  const probability = getAllMonkeys().reduce(
+    (acc, object) => acc + monkeyProb(object),
+    0,
+  );
 
   const requiredGenerations = 1 / probability;
   const genPerTick = gameState.generations / gameState.ticks;
@@ -215,3 +181,25 @@ export function ETAtoString() {
   }
   return string;
 }
+
+export function getAllMonkeys() {
+  const allMonkeys = [];
+
+  for (let type in monkeyTypes) {
+    allMonkeys.push(...gameState[type + "s"]);
+  }
+
+  return allMonkeys;
+}
+
+export function getTotalMonkeys() {
+  return Object.keys(monkeyTypes).reduce(
+    (acc, type) => acc + gameState[type + "s"].length * monkeyTypes[type],
+    0,
+  );
+}
+
+export const cashFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});

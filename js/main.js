@@ -1,36 +1,35 @@
 import { gameState } from "./state.js";
-import { runAutoClickers } from "./clickers.js";
-import { checkWin, buttonUpdate, updateStats } from "./ui.js";
+import { AutoClicker } from "./clickers.js";
+import { checkWin, buttonUpdate, updateStats, initializeUI } from "./ui.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
-import { HUDNotify } from "./notifications.js";
+import { hudNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
-import { 
-  buyMonkey,
-  buyAutoClicker,
-  buyMonkeyThing,
- } from "./buying.js"
+import { MonkeyObject } from "./monkeys.js";
+import { renderPassages, updateCards, updateGameStats } from "./render.js";
+
+initializeUI();
 
 // ====================================
 // --- Event Listeners ---
 // ====================================
 
 document
-  .getElementById("buyMonkeyButton")
-  .addEventListener("click", () => buyMonkey());
+  .getElementById("buy-monkey-button")
+  .addEventListener("click", () => MonkeyObject.buy("monkey"));
 
 document
-  .getElementById("buyAutoClickerButton")
-  .addEventListener("click", () => buyAutoClicker());
+  .getElementById("buy-autoclicker-button")
+  .addEventListener("click", () => AutoClicker.buy());
 
 document
-  .getElementById("buyMonkeyPackButton")
-  .addEventListener("click", () => buyMonkeyThing("monkeyPack", 10));
+  .getElementById("buy-monkeyPack-button")
+  .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
 
 document
-  .getElementById("buyMonkeyFarmButton")
-  .addEventListener("click", () => buyMonkeyThing("monkeyFarm", 100));
+  .getElementById("buy-monkeyFarm-button")
+  .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
 
 document
   .getElementById("updatePassageForm")
@@ -42,7 +41,7 @@ document
       gameState.passage = newPassage;
       document.getElementById("change-passage").value = "";
     } else {
-      HUDNotify("New passage must be at least as long as old one!", "maroon");
+      hudNotify("New passage must be at least as long as old one!", "maroon");
     }
   });
 
@@ -53,12 +52,19 @@ document
 if (DEVELOPER_MODE) {
   devModeActivate();
 }
+export let prevState = {};
 
 const mainLoop = window.setInterval(function () {
   gameState.ticks += 1;
+  updateCards();
+  renderPassages();
   flagSet();
   buttonUpdate();
   updateStats();
-  runAutoClickers();
+  updateGameStats();
+  AutoClicker.runClickers();
   checkWin();
+  prevState = {
+    bestPassage: gameState.bestPassage,
+  };
 }, TICK_INTERVAL);

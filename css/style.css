@@ -38,6 +38,11 @@
   position: relative;
 }
 
+.shop-area {
+  display: flex;
+  gap: 20px;
+}
+
 .toast {
   min-width: 100px;
   padding: 10px;

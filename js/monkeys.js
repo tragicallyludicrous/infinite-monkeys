@@ -1,14 +1,35 @@
 import { gameState } from "./state.js";
 
-import { buySpeedBooster, buyIntBooster } from "./buying.js";
+import {
+  randomWord,
+  randomLetter,
+  score,
+  payoutLog,
+  cashFormatter,
+} from "./helpers.js";
 
-import { randomWord, randomLetter, score } from "./helpers.js";
+import {
+  renderSingleOutput,
+  createCard,
+  updateCardScores,
+  updateCardStats,
+} from "./render.js";
+
+import {
+  INT_COST_MULTIPLIER,
+  monkeyTypes,
+  SPEED_COST_MULTIPLIER,
+} from "./config.js";
 
 import {
   ALPHABET,
+  BASE_INT_COST,
+  BASE_SPEED_COST,
   NAMESPACE_LOOPS,
+  PASSAGE,
   TYPE_TIME,
-  cashFormatter,
+  PAYOUT_BASE,
+  SCORE_MULTPLIER,
 } from "./config.js";
 
 import { adjectives, nouns } from "./monkeynames.js";
@@ -16,7 +37,7 @@ import { adjectives, nouns } from "./monkeynames.js";
 import { objectNotify } from "./notifications.js";
 
 // ====================================
-// ---  MONKEY LOGIC ---
+// ---  MONKEY HELPERS ---
 // ====================================
 
 export function monkeyName() {
@@ -40,141 +61,169 @@ export function monkeyName() {
   return name;
 }
 
-export function spawn(object) {
-  const type = object.type;
-  const wrapper = document.createElement("div");
-  const card = document.createElement("div");
-  wrapper.id = `${type}-wrapper-${object.id}`;
-  wrapper.className = `${type}-wrapper`;
-  card.className = `${type}-card`;
-  card.id = `${type}-${object.id}`;
-  card.innerHTML = renderCard(object);
-  card.addEventListener("click", (event) => {
-    if (event.target.id === `type-${type}-${object.id}`) {
-      objectType(object);
-    } else if (event.target.id === `speed-up-${object.type}-${object.id}`) {
-      buySpeedBooster(object);
-    } else if (event.target.id === `int-up-${object.type}-${object.id}`) {
-      buyIntBooster(object);
+// ====================================
+// ---  CORE MONKEY OBJECT ---
+// ====================================
+
+export class MonkeyObject {
+  constructor(thing) {
+    const size = monkeyTypes[thing];
+    const array = gameState[thing + "s"];
+    let header = null;
+
+    if (thing === "Monkey") {
+      header = monkey;
+    } else {
+      // Turn 'monkeyPack' into 'MonkeyPack' for the user
+      header = thing.charAt(0).toUpperCase() + thing.slice(1);
     }
-  });
-  const parent = document.getElementById(`monkeydiv`);
-  parent.prepend(wrapper);
-  wrapper.appendChild(card);
-}
 
-export function updateCard(object) {
-  document.getElementById(`${object.type}-${object.id}`).innerHTML =
-    renderCard(object);
-}
-
-export function renderCard(object) {
-  const type = object.type;
-  const intDisplay = gameState.intBoosterFlag ? "" : "display:none";
-  const twDisplay = gameState.typewriterUpgradeFlag ? "" : "display:none";
-  const suDisplay = !gameState.speedBoosterFlag ? "display:none" : "";
-  const iuDisplay = !gameState.intBoosterFlag ? "display:none" : "";
-  const suButton = gameState.cash < object.speedBoosterCost ? "disabled" : "";
-  const iuButton = gameState.cash < object.intBoosterCost ? "disabled" : "";
-  const typeButton = object.typing ? "disabled" : "";
-
-  return `
-        <p><i>${object.header}</i></p>
-        <h3>${object.name}</h3>
-        <p>Speed: ${object.speed}</p>
-        <button id="speed-up-${object.type}-${object.id}" style="${suDisplay}" ${suButton}>Speed Booster: ${cashFormatter.format(object.speedBoosterCost)}</button>
-        <p style="${intDisplay}">Intelligence: ${object.intelligence}</p>
-        <button id="int-up-${object.type}-${object.id}" style="${iuDisplay}" ${iuButton}>Intelligence Booster: ${cashFormatter.format(object.intBoosterCost)}</button>
-        <p style="${twDisplay}">Typewriter: ${object.typewriter}</p>
-        <p>High Score: ${object.high_score}</p>
-        <p>Best Attempt: ${renderOutput([object.best_attempt])}</p>
-        <button id="type-${type}-${object.id}" ${typeButton}>Type!</button>
-        <p id="${object.type}-${object.id}-typebox">${renderOutput(object.outputs)}</p>
-    `;
-}
-
-export function objectType(object) {
-  if (object.typing) return;
-  object.typing = true;
-  document.getElementById(`type-${object.type}-${object.id}`).disabled = true;
-  object.outputs = [];
-  const threads = object.threads;
-  let completed = 0;
-  let payoutSum = 0;
-  let oldHighScore = object.high_score;
-
-  for (let i = 0; i < threads; i++) {
-    let typed = 0;
-    object.outputs[i] = "";
-    const interval = setInterval(
-      () => {
-        let rand = Math.floor(Math.random() * (ALPHABET.length - 1)) + 1;
-        if (object.intelligence > 1 && rand < object.intelligence) {
-          object.outputs[i] += gameState.passage[typed];
-        } else {
-          object.outputs[i] += randomLetter();
-        }
-        document.getElementById(
-          `${object.type}-${object.id}-typebox`,
-        ).innerHTML = renderOutput(object.outputs);
-
-        typed++;
-        if (typed >= gameState.passage.length) {
-          clearInterval(interval);
-          // score this attempt
-          gameState.generations++;
-          object.latest_score = score(object, object.outputs[i]);
-          payoutSum +=
-            gameState.historicCash[gameState.historicCash.length - 1].payout;
-
-          if (object.latest_score > object.high_score) {
-            object.high_score = object.latest_score;
-            object.best_attempt = object.outputs[i];
-
-            if (object.high_score > gameState.topScore) {
-              gameState.topScore = object.high_score;
-              const tsm = document.getElementById("top-scoring-monkey");
-              tsm.innerHTML = `Top Scoring Monkey: ${object.name}`;
-              tsm.style.display = "block";
-
-              gameState.bestPassage = [object.outputs[i]];
-
-              const bp = document.getElementById("best-passage");
-              bp.innerHTML = `<b>Best Passage:</b> ${renderOutput(gameState.bestPassage)}`;
-              bp.style.display = "block";
-            }
-          }
-
-          completed++;
-          if (completed >= threads) {
-            object.typing = false;
-            objectNotify(object, `${cashFormatter.format(payoutSum)}`, "green");
-            if (object.high_score > oldHighScore)
-              objectNotify(object, "New High Score!");
-            updateCard(object);
-          }
-        }
-      },
-      TYPE_TIME / (object.speed * gameState.passage.length),
-    );
+    this.header = header;
+    this.type = thing;
+    this.id = array.length + 1;
+    this.name = `${monkeyName()}`;
+    this.speed = 1;
+    this.speedBoosterCost = BASE_SPEED_COST * (size * 0.8);
+    this.intBoosterCost = BASE_INT_COST * (size * 0.8);
+    this.intelligence = 1;
+    this.outputs = [];
+    this.latestScore = null;
+    this.highScore = null;
+    this.bestStreak = null;
+    this.bestAttempt = null;
+    this.typing = false;
+    this.typingProgress = 0;
+    this.threads = size;
+    array.push(this);
   }
-}
 
-export function renderOutput(outputs) {
-  let html = "";
-  for (let i = 0; i < outputs.length; i++) {
-    let styledOutput = "";
-    for (let j = 0; j < gameState.passage.length; j++) {
-      if (outputs[i][j] == gameState.passage[j]) {
-        styledOutput += `<span class="correct">${outputs[i][j]}</span>`;
-      } else if (outputs[i][j] == undefined) {
-        break;
+  static buy(thing, dev = false) {
+    if (!dev) {
+      if (gameState.cash > gameState[thing + "Cost"]) {
+        gameState.cash -= gameState[thing + "Cost"];
+        const newMonkey = new MonkeyObject(thing);
+        createCard(newMonkey);
+      }
+    } else {
+      const newMonkey = new MonkeyObject(thing);
+      createCard(newMonkey);
+    }
+  }
+
+  typeOnePassage() {
+    let passageAttempt = "";
+    for (let i = 0; i < gameState.passage.length; i++) {
+      if (Math.random() * ALPHABET.length < this.intelligence - 1) {
+        passageAttempt += gameState.passage[i];
       } else {
-        styledOutput += `<span>${outputs[i][j]}</span>`;
+        passageAttempt += randomLetter();
       }
     }
-    html += `<br /> ${styledOutput}`;
+    return passageAttempt;
   }
 
-  return html;
+  typeAllPassages() {
+    for (let i = 0; i < this.threads; i++) {
+      this.outputs.push(this.typeOnePassage());
+    }
+  }
+
+  score(output) {
+    // if a correct letter is next to another correct letter, its worth an extra point, compounding.
+    let streak = 0;
+    let streakHigh = false;
+    let score = 0;
+
+    for (let i = 0; i < output.length; i++) {
+      if (output[i] == gameState.passage[i]) {
+        streak++;
+        score += streak;
+        if (streak > this.bestStreak) {
+          this.bestStreak = streak;
+          streakHigh = true;
+        }
+      } else {
+        streak = 0;
+      }
+    }
+
+    if (streakHigh) objectNotify(this, `New Best Streak! ${this.bestStreak}`);
+
+    if (score > gameState.topScore) {
+      gameState.topScore = score;
+      gameState.topScoringMonkey = this;
+      gameState.bestPassage = output;
+    }
+    return score;
+  }
+
+  payout(score) {
+    const payout = PAYOUT_BASE * SCORE_MULTPLIER ** score;
+    return payout;
+  }
+
+  soliloquize() {
+    const { typing, typingProgress, type, id, speed } = this;
+    if (this.typing) return;
+
+    this.typing = true;
+
+    this.typingProgress = 0;
+
+    this.outputs = [];
+
+    // Pre-type the passages all at once
+    this.typeAllPassages();
+
+    const interval = setInterval(
+      () => {
+        this.typingProgress++;
+      },
+      TYPE_TIME / (speed * gameState.passage.length),
+    );
+
+    // at the end, calculate score, run notifications and update cash
+    setTimeout(() => {
+      clearInterval(interval);
+      this.typingProgress = gameState.passage.length;
+      gameState.generations += this.threads;
+      this.typing = false;
+      const scores = this.outputs.map((o) => this.score(o));
+      const localHighScore = Math.max(...scores);
+
+      const totalPayout = scores
+        .map((s) => this.payout(s))
+        .reduce((acc, payout) => acc + payout, 0);
+
+      gameState.cash += totalPayout;
+
+      payoutLog(totalPayout);
+
+      objectNotify(this, `${cashFormatter.format(totalPayout)}`, "green");
+      if (localHighScore > this.highScore) {
+        objectNotify(this, "New High Score!");
+        this.bestAttempt = this.outputs[scores.indexOf(localHighScore)];
+        this.highScore = localHighScore;
+        if (localHighScore > gameState.topScore) {
+          gameState.topScore = localHighScore;
+          gameState.topScoringMonkey = this;
+        }
+        updateCardScores(this);
+      }
+    }, TYPE_TIME / speed);
+  }
+
+  buySpeedBooster(dev = false) {
+    if (!dev) gameState.cash -= this.speedBoosterCost;
+    this.speedBoosterCost *= SPEED_COST_MULTIPLIER;
+    this.speed++;
+    updateCardStats(this);
+  }
+
+  buyIntBooster(dev = false) {
+    if (!dev) gameState.cash -= this.intBoosterCost;
+    this.intBoosterCost *= INT_COST_MULTIPLIER;
+    this.intelligence++;
+    updateCardStats(this);
+  }
 }
