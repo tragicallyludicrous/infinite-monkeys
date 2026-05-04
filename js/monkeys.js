@@ -113,7 +113,7 @@ export class MonkeyObject {
   typeOnePassage() {
     let passageAttempt = "";
     for (let i = 0; i < gameState.passage.length; i++) {
-      if (Math.random() * ALPHABET.length < this.intelligence) {
+      if (Math.random() * ALPHABET.length < this.intelligence - 1) {
         passageAttempt += gameState.passage[i];
       } else {
         passageAttempt += randomLetter();
@@ -149,13 +149,10 @@ export class MonkeyObject {
 
     if (streakHigh) objectNotify(this, `New Best Streak! ${this.bestStreak}`);
 
-    if (score > this.highScore) {
-      this.highScore = score;
-      this.bestAttempt = output;
-    }
     if (score > gameState.topScore) {
       gameState.topScore = score;
       gameState.topScoringMonkey = this;
+      gameState.bestPassage = output;
     }
     return score;
   }
@@ -188,9 +185,11 @@ export class MonkeyObject {
     // at the end, calculate score, run notifications and update cash
     setTimeout(() => {
       clearInterval(interval);
+      this.typingProgress = gameState.passage.length;
+      gameState.generations += this.threads;
       this.typing = false;
       const scores = this.outputs.map((o) => this.score(o));
-      const localHighScore = Math.max(scores);
+      const localHighScore = Math.max(...scores);
 
       const totalPayout = scores
         .map((s) => this.payout(s))
@@ -201,9 +200,9 @@ export class MonkeyObject {
       payoutLog(totalPayout);
 
       objectNotify(this, `${cashFormatter.format(totalPayout)}`, "green");
-
       if (localHighScore > this.highScore) {
         objectNotify(this, "New High Score!");
+        this.bestAttempt = this.outputs[scores.indexOf(localHighScore)];
         this.highScore = localHighScore;
         if (localHighScore > gameState.topScore) {
           gameState.topScore = localHighScore;

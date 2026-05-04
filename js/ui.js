@@ -4,29 +4,44 @@ import {
   BASE_MONKEY_COST,
   MONKEY_COST_MULTIPLIER,
   AUTOCLICKER_COST_MULTIPLIER,
+  monkeyTypes,
 } from "./config.js";
 import {
   secondsPerTick,
   ETAtoString,
   cashPerSec,
   cashFormatter,
+  getTotalMonkeys,
 } from "./helpers.js";
 
 // ====================================
 // ---  UI Updates ---
 // ====================================
 
+export function initializeUI() {
+  const monkeyShop = document.getElementById("monkey-shop");
+
+  for (let type in monkeyTypes) {
+    const header = type.charAt(0).toUpperCase() + type.slice(1);
+    const div = document.createElement("div");
+    const id = `buy-${type}-button`;
+    div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState[type + "Cost"])}</button>`;
+    monkeyShop.appendChild(div);
+  }
+
+  document.getElementById("buy-monkey-button").style.display = "block";
+}
+
 export function updateStats() {
   // Destructure variables for read-only use
   const { cash, monkeys, autoClickers, monkeyPacks, monkeyFarms } = gameState;
   const passageDisplay = document.getElementById("passage-to-match");
-  const ETADisplay = document.getElementById("ETA");
+  const etaDisplay = document.getElementById("ETA");
   const cashDisplay = document.getElementById("cash-display");
   const autoClickersDisplay = document.getElementById("autoclickers-display");
   const monkeysDisplay = document.getElementById("monkeys-display");
   const cashPerSecDisplay = document.getElementById("cash-per-second");
-  const totalMonkeys =
-    monkeys.length + monkeyPacks.length * 10 + monkeyFarms.length * 100;
+  const totalMonkeys = getTotalMonkeys();
   const totalMonkeyUnits =
     monkeys.length + monkeyPacks.length + monkeyFarms.length;
   const generations = document.getElementById("generations");
@@ -39,20 +54,30 @@ export function updateStats() {
 
   // ETA
   if (gameState.generations != 0) {
-    ETADisplay.innerHTML = `<b>ETA: </b>${ETAtoString()}`;
+    etaDisplay.innerHTML = `<b>ETA: </b>${ETAtoString()}`;
     cashPerSecDisplay.innerHTML = `<b>Cash/sec: </b>${cashFormatter.format(cashPerSec())}`;
   }
 
+  // Cost of all monkey objects
   gameState.monkeyCost =
     BASE_MONKEY_COST * MONKEY_COST_MULTIPLIER ** totalMonkeyUnits;
 
+  let prev;
+  for (let m in monkeyTypes) {
+    if (m === "monkey") {
+      prev = m;
+      continue;
+    }
+    gameState[m + "Cost"] = gameState[prev + "Cost"] * 8;
+    prev = m;
+  }
+
+  // Autoclicker cost
   gameState.autoClickerCost =
     BASE_AUTOCLICKER_COST *
     AUTOCLICKER_COST_MULTIPLIER ** gameState.autoClickers.length;
 
-  gameState.monkeyPackCost = gameState.monkeyCost * 8;
-  gameState.monkeyFarmCost = gameState.monkeyPackCost * 8;
-
+  // Update simple stats
   if (cashDisplay.innerHTML != "Cash: " + cashFormatter.format(cash)) {
     cashDisplay.innerHTML = "Cash: " + cashFormatter.format(cash);
   }
@@ -70,7 +95,6 @@ export function updateStats() {
 }
 
 export function buttonUpdate() {
-  // Destructure variables for read-only use
   const {
     cash,
     monkeyCost,
@@ -82,20 +106,23 @@ export function buttonUpdate() {
     monkeyFarmFlag,
   } = gameState;
 
-  const monkeyButton = document.getElementById("buyMonkeyButton");
-  const buyAutoClickerButton = document.getElementById("buyAutoClickerButton");
-  const buyMonkeyPackButton = document.getElementById("buyMonkeyPackButton");
-  const buyMonkeyFarmButton = document.getElementById("buyMonkeyFarmButton");
+  const buyAutoClickerButton = document.getElementById(
+    "buy-autoclicker-button",
+  );
+
+  const buyMonkeyButton = document.getElementById("buy-monkey-button");
+  const buyMonkeyPackButton = document.getElementById("buy-monkeyPack-button");
+  const buyMonkeyFarmButton = document.getElementById("buy-monkeyFarm-button");
 
   // --- MONKEY BUYING ---
-  monkeyButton.querySelector("button").disabled = cash < monkeyCost;
+
+  buyMonkeyButton.disabled = cash < monkeyCost;
 
   if (
-    monkeyButton.querySelector("button").innerHTML !=
+    buyMonkeyButton.innerHTML !=
     `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
   ) {
-    monkeyButton.querySelector("button").innerHTML =
-      `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
+    buyMonkeyButton.innerHTML = `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
   }
 
   // --- AUTOCLICKER BUYING ---
@@ -119,14 +146,13 @@ export function buttonUpdate() {
     buyMonkeyPackButton.style.display = "block";
   }
 
-  buyMonkeyPackButton.querySelector("button").disabled = cash < monkeyPackCost;
+  buyMonkeyPackButton.disabled = cash < monkeyPackCost;
 
   if (
-    buyMonkeyPackButton.querySelector("button").innerHTML !=
+    buyMonkeyPackButton.innerHTML !=
     `Buy MonkeyPack: ${cashFormatter.format(monkeyPackCost)}`
   ) {
-    buyMonkeyPackButton.querySelector("button").innerHTML =
-      `Buy MonkeyPack: ${cashFormatter.format(monkeyPackCost)}`;
+    buyMonkeyPackButton.innerHTML = `Buy MonkeyPack: ${cashFormatter.format(monkeyPackCost)}`;
   }
 
   // --- MONKEYFARM BUYING ---
@@ -134,14 +160,13 @@ export function buttonUpdate() {
     buyMonkeyFarmButton.style.display = "block";
   }
 
-  buyMonkeyFarmButton.querySelector("button").disabled = cash < monkeyFarmCost;
+  buyMonkeyFarmButton.disabled = cash < monkeyFarmCost;
 
   if (
-    buyMonkeyFarmButton.querySelector("button").innerHTML !=
+    buyMonkeyFarmButton.innerHTML !=
     `Buy MonkeyFarm: ${cashFormatter.format(monkeyFarmCost)}`
   ) {
-    buyMonkeyFarmButton.querySelector("button").innerHTML =
-      `Buy MonkeyFarm: ${cashFormatter.format(monkeyFarmCost)}`;
+    buyMonkeyFarmButton.innerHTML = `Buy MonkeyFarm: ${cashFormatter.format(monkeyFarmCost)}`;
   }
 
   [
