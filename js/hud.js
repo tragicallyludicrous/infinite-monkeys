@@ -135,15 +135,13 @@ export function buttonUpdate() {
     buyAutoClickerButton.style.display = "block";
   }
 
-  buyAutoClickerButton.querySelector("button").disabled =
-    cash < autoClickerCost;
+  buyAutoClickerButton.disabled = cash < autoClickerCost;
 
   if (
-    buyAutoClickerButton.querySelector("button").innerHTML !=
+    buyAutoClickerButton.innerHTML !=
     `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`
   ) {
-    buyAutoClickerButton.querySelector("button").innerHTML =
-      `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`;
+    buyAutoClickerButton.innerHTML = `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`;
   }
 
   // Int/Speed Button avialability

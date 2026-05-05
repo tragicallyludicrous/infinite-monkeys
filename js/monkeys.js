@@ -142,19 +142,12 @@ export class MonkeyObject {
       payoutLog(totalPayout);
 
       objectNotify(this, `${cashFormatter.format(totalPayout)}`, "green");
-      console.log(
-        `localHighScore: ${localHighScore}, this.highScore: ${this.highScore}`,
-      );
       if (localHighScore > this.highScore) {
         objectNotify(this, "New High Score!");
         this.bestAttempt = this.outputs[scores.indexOf(localHighScore)];
         this.highScore = localHighScore;
-        console.log(
-          `gameState.topScore: ${gameState.topScore}, this.highScore: ${this.highScore}`,
-        );
         if (localHighScore > gameState.topScore) {
           gameState.topScore = localHighScore;
-          console.log("new top scorer: " + this);
           gameState.topScoringMonkey = this;
           gameState.bestPassage = this.bestAttempt;
         }
