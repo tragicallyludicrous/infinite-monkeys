@@ -8,7 +8,7 @@ import {
   SPEED_BOOST_THRESHOLD,
 } from "./config.js";
 import { hudNotify } from "./notifications.js";
-import { updateCardFlags } from "./render.js";
+import { updateCardFlags } from "./cards.js";
 import { getTotalMonkeys } from "./helpers.js";
 
 // ====================================

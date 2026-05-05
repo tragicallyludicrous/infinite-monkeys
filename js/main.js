@@ -1,13 +1,13 @@
 import { gameState } from "./state.js";
 import { AutoClicker } from "./clickers.js";
-import { checkWin, buttonUpdate, updateStats, initializeUI } from "./ui.js";
+import { checkWin, buttonUpdate, updateStats, initializeUI } from "./hud.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
 import { hudNotify } from "./notifications.js";
 import { passageFormatter } from "./helpers.js";
 import { MonkeyObject } from "./monkeys.js";
-import { renderPassages, updateCards, updateGameStats } from "./render.js";
+import { renderPassages, updateCards, updateGameStats } from "./cards.js";
 
 initializeUI();
 

@@ -12,7 +12,7 @@ import {
   createCard,
   updateCardScores,
   updateCardStats,
-} from "./render.js";
+} from "./cards.js";
 
 import {
   INT_COST_MULTIPLIER,

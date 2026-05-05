@@ -4,7 +4,7 @@ import { getRandomHighlightColor, getAllMonkeys } from "./helpers.js";
 
 import { AUTOCLICKER_TIME } from "./config.js";
 
-import { spawnAutoClicker } from "./render.js";
+import { spawnAutoClicker } from "./cards.js";
 
 // ====================================
 // ---  AUTOCLICKER LOGIC ---
