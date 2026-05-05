@@ -57,15 +57,15 @@ export class AutoClicker {
 
     // Prioritize the object type with the most parallel monkeys
     const maxThreads = Math.max(...available.map((m) => m.threads));
-    const best_available = available.filter((m) => m.threads === maxThreads);
+    const bestAvailable = available.filter((m) => m.threads === maxThreads);
 
     // Choose one of those at random
-    const chosen_object =
-      best_available[Math.floor(Math.random() * best_available.length)];
+    const chosenObject =
+      bestAvailable[Math.floor(Math.random() * bestAvailable.length)];
 
-    gameState.autoClickerTargets.push(chosen_object);
+    gameState.autoClickerTargets.push(chosenObject);
 
-    return chosen_object;
+    return chosenObject;
   }
 
   static buy(dev = false) {
