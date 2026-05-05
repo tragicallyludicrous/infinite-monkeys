@@ -1,7 +1,8 @@
 import { gameState } from "./state.js";
 import { monkeyTypes, BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
 import { getAllMonkeys, cashFormatter } from "./helpers.js";
-import { prevState } from "./main.js";
+
+let lastBestPassage = null;
 
 // Only render onscreen monkeys
 const visibleWrappers = new Set(); // stores wrapper element IDs
@@ -211,9 +212,10 @@ export function updateGameStats() {
 
   if (bestPassage) document.getElementById("best-passage").style.display = "";
 
-  if (bestPassage != prevState.bestPassage) {
+  if (bestPassage != lastBestPassage) {
     document.getElementById("best-passage").innerHTML =
       "Best Passage: " + renderSingleOutput(bestPassage);
+    lastBestPassage = bestPassage;
   }
 }
 

@@ -64,7 +64,4 @@ const mainLoop = window.setInterval(function () {
   updateGameStats();
   AutoClicker.runClickers();
   checkWin();
-  prevState = {
-    bestPassage: gameState.bestPassage,
-  };
 }, TICK_INTERVAL);
