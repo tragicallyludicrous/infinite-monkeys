@@ -21,10 +21,11 @@ import { etaToString } from "./format.js";
 // ---  UI Updates ---
 // ====================================
 
+// Dynamically build out the monkey-buying area of the UI based on monkeyTypes
 export function initializeUI() {
   const monkeyShop = document.getElementById("monkey-shop");
 
-  for (let type in monkeyTypes) {
+  for (const type of Object.keys(monkeyTypes)) {
     const header = type.charAt(0).toUpperCase() + type.slice(1);
     const div = document.createElement("div");
     const id = `buy-${type}-button`;
@@ -128,9 +129,7 @@ export function buttonUpdate() {
 
   // --- AUTOCLICKER BUYING ---
 
-  const buyAutoClickerButton = document.getElementById(
-    "buy-autoclicker-button",
-  );
+  const buyAutoClickerButton = getButton("buy-autoclicker-button");
 
   if (autoClickerFlag && buyAutoClickerButton.style.display == "none") {
     buyAutoClickerButton.style.display = "block";
