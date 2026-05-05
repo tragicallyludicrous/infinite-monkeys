@@ -105,7 +105,6 @@ export function createCard(monkey) {
 }
 
 export function renderSingleOutput(text) {
-  let html = "";
   if (!text) return;
   let styledOutput = "";
   for (let i = 0; i < text.length; i++) {

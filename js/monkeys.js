@@ -37,31 +37,6 @@ import { adjectives, nouns } from "./monkeynames.js";
 import { objectNotify } from "./notifications.js";
 
 // ====================================
-// ---  MONKEY HELPERS ---
-// ====================================
-
-export function monkeyName() {
-  const monkeyNames = gameState.monkeys.map((i) => i.name);
-  let name;
-  let namespace = adjectives.length * nouns.length;
-  let tries = 0;
-
-  do {
-    name = randomWord(adjectives) + " " + randomWord(nouns);
-
-    if (NAMESPACE_LOOPS > 0) {
-      name += ` #${NAMESPACE_LOOPS + 1}`;
-    }
-    if (tries == namespace) {
-      NAMESPACE_LOOPS++;
-      tries = 0;
-    }
-    tries++;
-  } while (monkeyNames.includes(name));
-  return name;
-}
-
-// ====================================
 // ---  CORE MONKEY OBJECT ---
 // ====================================
 
@@ -69,19 +44,11 @@ export class MonkeyObject {
   constructor(thing) {
     const size = monkeyTypes[thing];
     const array = gameState[thing + "s"];
-    let header = null;
-
-    if (thing === "Monkey") {
-      header = monkey;
-    } else {
-      // Turn 'monkeyPack' into 'MonkeyPack' for the user
-      header = thing.charAt(0).toUpperCase() + thing.slice(1);
-    }
-
-    this.header = header;
+    
+    this.header = thing.charAt(0).toUpperCase() + thing.slice(1);
     this.type = thing;
     this.id = array.length + 1;
-    this.name = `${monkeyName()}`;
+    this.name = ( randomWord(adjectives) + " " + randomWord(nouns) );
     this.speed = 1;
     this.speedBoosterCost = BASE_SPEED_COST * (size * 0.8);
     this.intBoosterCost = BASE_INT_COST * (size * 0.8);
@@ -99,7 +66,7 @@ export class MonkeyObject {
 
   static buy(thing, dev = false) {
     if (!dev) {
-      if (gameState.cash > gameState[thing + "Cost"]) {
+      if (gameState.cash >= gameState[thing + "Cost"]) {
         gameState.cash -= gameState[thing + "Cost"];
         const newMonkey = new MonkeyObject(thing);
         createCard(newMonkey);
