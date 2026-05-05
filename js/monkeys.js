@@ -66,17 +66,11 @@ export class MonkeyObject {
 
 
   static buy(thing, dev = false) {
-    if (!dev) {
-      if (gameState.cash >= gameState[thing + "Cost"]) {
-        gameState.cash -= gameState[thing + "Cost"];
+      if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
+      if (!dev) gameState.cash -= gameState[thing + "Cost"];
         const newMonkey = new MonkeyObject(thing);
         createCard(newMonkey);
-      }
-    } else {
-      const newMonkey = new MonkeyObject(thing);
-      createCard(newMonkey);
-    }
-  }
+  } 
 
   typeOnePassage() {
     let passageAttempt = "";
