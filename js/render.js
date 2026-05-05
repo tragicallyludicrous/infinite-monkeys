@@ -124,16 +124,16 @@ export function renderOutputs(monkey) {
   let outputs = monkey.outputs;
   if (!outputs) return "";
   let html = "";
-  for (let i in outputs) {
+  for (const output of outputs) {
     let styledOutput = "";
 
-    for (let j = 0; j < monkey.typingProgress; j++) {
-      if (outputs[i][j] == gameState.passage[j]) {
-        styledOutput += `<span class="correct">${outputs[i][j]}</span>`;
-      } else if (outputs[i][j] == undefined) {
+    for (let i = 0; i < monkey.typingProgress; i++) {
+      if (output[i] == gameState.passage[i]) {
+        styledOutput += `<span class="correct">${output[i]}</span>`;
+      } else if (output[i] == undefined) {
         break;
       } else {
-        styledOutput += `<span>${outputs[i][j]}</span>`;
+        styledOutput += `<span>${output[i]}</span>`;
       }
     }
     html += `<br /> ${styledOutput}`;
