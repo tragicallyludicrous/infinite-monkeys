@@ -27,6 +27,7 @@ export const MONKEYFARM_THRESHOLD = 50;
 export const BASE_INT_COST = 10000;
 export const INT_BOOST_THRESHOLD = 250;
 export const INT_COST_MULTIPLIER = (1 + Math.sqrt(5)) / 2; // Phi
+export const BULK_DISCOUNT_MULTIPLIER = 0.8; // How much cheaper is buying 10 of a monkeytype
 
 export const monkeyTypes = {
   monkey: 1,
