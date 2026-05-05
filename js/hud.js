@@ -1,8 +1,6 @@
 import { gameState } from "./state.js";
 import {
   BASE_AUTOCLICKER_COST,
-  BASE_MONKEY_COST,
-  MONKEY_COST_MULTIPLIER,
   AUTOCLICKER_COST_MULTIPLIER,
   monkeyTypes,
   TICKS_PER_SECOND,
@@ -13,7 +11,6 @@ import {
   getTotalMonkeys,
   getEta,
   getAllMonkeys,
-  getCosts,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
 import { ticksToString } from "./format.js";
@@ -70,7 +67,7 @@ export function updateStats() {
   }
 
   // Cost of all monkey objects
-  getCosts();
+  
 
   // Autoclicker cost
   gameState.autoClickerCost =

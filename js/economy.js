@@ -70,13 +70,14 @@ export function getTotalMonkeys() {
   );
 }
 
+// Update the cost of all monkeyObjects
 export function getCosts() {
   for (const m of Object.keys(monkeyTypes)) {
     gameState[m + "Cost"] =
       BASE_MONKEY_COST *
       monkeyTypes[m] *
       (BULK_DISCOUNT_MULTIPLIER ** Math.log10(monkeyTypes[m]) *
-        MONKEY_COST_MULTIPLIER ** getAllMonkeys().length);
+        MONKEY_COST_MULTIPLIER ** (getAllMonkeys().length + 1));
   }
 }
 

@@ -1,5 +1,5 @@
 import { gameState } from "./state.js";
-import { payoutLog, cashFormatter } from "./economy.js";
+import { payoutLog, cashFormatter, getCosts } from "./economy.js";
 import { randomLetter, randomWord } from "./random.js";
 import { createCard, updateCardScores, updateCardStats } from "./cards.js";
 import {
@@ -51,6 +51,7 @@ export class MonkeyObject {
   static buy(thing, dev = false) {
     if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
     if (!dev) gameState.cash -= gameState[thing + "Cost"];
+    getCosts();
     const newMonkey = new MonkeyObject(thing);
     createCard(newMonkey);
   }
