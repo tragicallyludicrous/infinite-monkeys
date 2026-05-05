@@ -1,5 +1,13 @@
-import { ALPHABET, TICKS_PER_SECOND } from "./config.js";
-import { monkeyTypes } from "./config.js";
+import {
+  ALPHABET,
+  BULK_DISCOUNT_MULTIPLIER,
+  TICKS_PER_SECOND,
+} from "./config.js";
+import {
+  monkeyTypes,
+  BASE_MONKEY_COST,
+  MONKEY_COST_MULTIPLIER,
+} from "./config.js";
 import { gameState } from "./state.js";
 
 // ====================================
@@ -27,12 +35,13 @@ export function cashPerSec() {
   return average;
 }
 
-export function monkeyProb(object) {
+function monkeyProb(object) {
   const pLuck = 1 / ALPHABET.length;
   const pInt = (object.intelligence - 1) / ALPHABET.length;
   return (pInt + (1 - pInt) * pLuck) ** gameState.passage.length;
 }
 
+// Return the number of ticks required to win based on probability
 export function getEta() {
   const probability = getAllMonkeys().reduce(
     (acc, object) => acc + monkeyProb(object),
@@ -59,6 +68,16 @@ export function getTotalMonkeys() {
     (acc, type) => acc + gameState[type + "s"].length * monkeyTypes[type],
     0,
   );
+}
+
+export function getCosts() {
+  for (const m of Object.keys(monkeyTypes)) {
+    gameState[m + "Cost"] =
+      BASE_MONKEY_COST *
+      monkeyTypes[m] *
+      (BULK_DISCOUNT_MULTIPLIER ** Math.log10(monkeyTypes[m]) *
+        MONKEY_COST_MULTIPLIER ** getAllMonkeys().length);
+  }
 }
 
 export const cashFormatter = new Intl.NumberFormat("en-US", {

@@ -13,6 +13,7 @@ import {
   getTotalMonkeys,
   getEta,
   getAllMonkeys,
+  getCosts,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
 import { ticksToString } from "./format.js";
@@ -54,8 +55,7 @@ export function updateStats() {
   const cashPerSecDisplay = document.getElementById("cash-per-second");
   const bestMonkey = document.getElementById("top-scoring-monkey");
   const totalMonkeys = getTotalMonkeys();
-  const totalMonkeyUnits =
-    monkeys.length + monkeyPacks.length + monkeyFarms.length;
+
   const generations = document.getElementById("generations");
 
   passageDisplay.innerHTML = `<b>Passage:</b> ${gameState.passage}`;
@@ -70,18 +70,7 @@ export function updateStats() {
   }
 
   // Cost of all monkey objects
-  gameState.monkeyCost =
-    BASE_MONKEY_COST * MONKEY_COST_MULTIPLIER ** totalMonkeyUnits;
-
-  let prev;
-  for (let m in monkeyTypes) {
-    if (m === "monkey") {
-      prev = m;
-      continue;
-    }
-    gameState[m + "Cost"] = gameState[prev + "Cost"] * 8;
-    prev = m;
-  }
+  getCosts();
 
   // Autoclicker cost
   gameState.autoClickerCost =
