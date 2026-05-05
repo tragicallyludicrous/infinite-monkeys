@@ -1,28 +1,16 @@
 import { gameState } from "./state.js";
-
 import { payoutLog, cashFormatter } from "./economy.js";
-
 import { randomLetter, randomWord } from "./random.js";
-
-import {
-  renderSingleOutput,
-  createCard,
-  updateCardScores,
-  updateCardStats,
-} from "./cards.js";
-
+import { createCard, updateCardScores, updateCardStats } from "./cards.js";
 import {
   INT_COST_MULTIPLIER,
   monkeyTypes,
   SPEED_COST_MULTIPLIER,
 } from "./config.js";
-
 import {
   ALPHABET,
   BASE_INT_COST,
   BASE_SPEED_COST,
-  NAMESPACE_LOOPS,
-  PASSAGE,
   TYPE_TIME,
   PAYOUT_BASE,
   SCORE_MULTPLIER,

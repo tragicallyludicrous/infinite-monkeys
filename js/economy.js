@@ -1,5 +1,4 @@
 import { ALPHABET, TICKS_PER_SECOND } from "./config.js";
-
 import { monkeyTypes } from "./config.js";
 import { gameState } from "./state.js";
 

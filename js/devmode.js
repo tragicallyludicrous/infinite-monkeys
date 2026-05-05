@@ -1,5 +1,4 @@
 import { MonkeyObject } from "./monkeys.js";
-
 import { getAllMonkeys } from "./economy.js";
 import { AutoClicker } from "./clickers.js";
 

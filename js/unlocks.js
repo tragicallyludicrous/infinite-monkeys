@@ -1,5 +1,4 @@
 import { gameState } from "./state.js";
-import { monkeyTypes } from "./config.js";
 import {
   INT_BOOST_THRESHOLD,
   MONKEYFARM_THRESHOLD,
@@ -17,9 +16,6 @@ import { getTotalMonkeys } from "./economy.js";
 
 export function flagSet() {
   const {
-    monkeys,
-    monkeyPacks,
-    monkeyFarms,
     autoClickerFlag,
     speedBoosterFlag,
     monkeyPackFlag,

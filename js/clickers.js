@@ -1,11 +1,7 @@
 import { gameState } from "./state.js";
-
 import { getAllMonkeys } from "./economy.js";
-
 import { getRandomHighlightColor } from "./random.js";
-
 import { AUTOCLICKER_TIME } from "./config.js";
-
 import { spawnAutoClicker } from "./cards.js";
 
 // ====================================

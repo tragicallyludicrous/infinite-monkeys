@@ -12,6 +12,7 @@ import {
   cashFormatter,
   getTotalMonkeys,
   getEta,
+  getAllMonkeys,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
 import { etaToString } from "./format.js";
@@ -103,18 +104,11 @@ export function updateStats() {
 }
 
 export function buttonUpdate() {
-  const {
-    cash,
-    monkeyCost,
-    autoClickerCost,
-    autoClickerFlag,
-    monkeyPackFlag,
-    monkeyPackCost,
-    monkeyFarmCost,
-    monkeyFarmFlag,
-  } = gameState;
+  const { cash, autoClickerCost, autoClickerFlag } = gameState;
 
   // --- MONKEY BUYING ---
+  // Creates a button, toggles its disabled status and visibility depending on cash/Flags
+  // Does this for each monkeyType in config.js
 
   for (const type of Object.keys(monkeyTypes)) {
     const btn = getButton(`buy-${type}-button`);
@@ -153,16 +147,14 @@ export function buttonUpdate() {
       `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`;
   }
 
-  [
-    ...gameState.monkeys,
-    ...gameState.monkeyPacks,
-    ...gameState.monkeyFarms,
-  ].forEach((obj) => {
-    const btnSpd = getButton(`speed-up-${obj.type}-${obj.id}`);
-    const btnInt = getButton(`int-up-${obj.type}-${obj.id}`);
-    if (btnSpd) btnSpd.disabled = gameState.cash < obj.speedBoosterCost;
-    if (btnInt) btnInt.disabled = gameState.cash < obj.intBoosterCost;
-  });
+  // Int/Speed Button avialability
+
+  for (const m of getAllMonkeys()) {
+    const btnSpd = getButton(`speed-up-${m.type}-${m.id}`);
+    const btnInt = getButton(`int-up-${m.type}-${m.id}`);
+    if (btnSpd) btnSpd.disabled = gameState.cash < m.speedBoosterCost;
+    if (btnInt) btnInt.disabled = gameState.cash < m.intBoosterCost;
+  }
 }
 
 export function checkWin() {

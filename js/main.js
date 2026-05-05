@@ -53,7 +53,6 @@ document
 if (DEVELOPER_MODE) {
   devModeActivate();
 }
-export let prevState = {};
 
 const mainLoop = window.setInterval(function () {
   gameState.ticks += 1;
