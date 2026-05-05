@@ -5,7 +5,7 @@ import {
   MONKEY_COST_MULTIPLIER,
   AUTOCLICKER_COST_MULTIPLIER,
   monkeyTypes,
-  SECONDS_PER_TICK,
+  TICKS_PER_SECOND,
 } from "./config.js";
 import {
   cashPerSec,
@@ -15,7 +15,7 @@ import {
   getAllMonkeys,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
-import { etaToString } from "./format.js";
+import { ticksToString } from "./format.js";
 
 // ====================================
 // ---  UI Updates ---
@@ -65,7 +65,7 @@ export function updateStats() {
 
   // ETA
   if (gameState.generations != 0) {
-    etaDisplay.innerHTML = `<b>ETA: </b>${etaToString()}`;
+    etaDisplay.innerHTML = `<b>ETA: </b>${ticksToString(getEta())}`;
     cashPerSecDisplay.innerHTML = `<b>Cash/sec: </b>${cashFormatter.format(cashPerSec())}`;
   }
 
@@ -155,42 +155,22 @@ export function buttonUpdate() {
 }
 
 export function checkWin() {
-  const ETAInSeconds = Math.floor(getEta() * SECONDS_PER_TICK);
-  const ETAInYears = ETAInSeconds / 31536000;
-
-  const ticksInSeconds = Math.floor(gameState.ticks * SECONDS_PER_TICK);
-  const ticksInMinutes = Math.floor(ticksInSeconds / 60);
-  const ticksInHours = Math.floor(ticksInMinutes / 60);
-  const ticksInDays = Math.floor(ticksInHours / 24);
-
-  const hoursOnly = ticksInHours % 24;
-  const minutesOnly = ticksInMinutes % 60;
-  const secondsOnly = ticksInSeconds % 60;
-
-  let string = "";
-
-  if (ticksInDays > 1) {
-    string = `${ticksInDays} days, ${hoursOnly} hours, ${minutesOnly} minutes`;
-  } else if (ticksInDays < 1) {
-    string = `${ticksInHours} hours, ${minutesOnly} minutes, ${secondsOnly} seconds`;
-  } else {
-    string = `...way too long.`;
-  }
+  const oneYear = 31536000 * TICKS_PER_SECOND;
 
   if (gameState.bestPassage == gameState.passage && !gameState.winFlag) {
     gameState.winFlag = true;
     const endingDiv = document.getElementById("ending-div");
-    if (ETAInYears > 1) {
+    if (getEta() > oneYear) {
       endingDiv.innerHTML = `
       <h1>You did it.</h1> 
       <p>And you didn't need to sacrifice your monkey-manity to do so.</p>
       <p>Which is literally insane. This shouldn't be possible. Go play the PowerBall.</p>
-      <p>Seriously. This was supposed to take ${ETAInYears} and you did it in ${string}.
+      <p>Seriously. This was supposed to take ${ticksToString(getEta())} and you did it in ${ticksToString(gameState.ticks)}.
       <img src="images/goodending.png" />
       `;
     } else {
       endingDiv.innerHTML = `
-      <h1>You did it. It only took ${string}</h1> 
+      <h1>You did it. It only took ${ticksToString(gameState.ticks)}</h1> 
       <p>but at what cost???</p>
       <img src="images/badending.jpg" />
       `;

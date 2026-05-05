@@ -2,7 +2,6 @@
 
 import { SECONDS_PER_TICK } from "./config.js";
 import { gameState } from "./state.js";
-import { getEta } from "./economy.js";
 
 export function passageFormatter(text) {
   return text.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
@@ -39,12 +38,12 @@ export function yearFormatter(years) {
   return years.toFixed(1).replace(/\.0$/, "") + postfixes[count];
 }
 
-export function etaToString() {
+export function ticksToString(ticks) {
   if (gameState.generations === 0) return; // no data yet, skip ETA
 
   const etaFormatter = new Intl.DurationFormat("en", { style: "long" });
 
-  const seconds = Math.floor(getEta() * SECONDS_PER_TICK);
+  const seconds = Math.floor(ticks * SECONDS_PER_TICK);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
