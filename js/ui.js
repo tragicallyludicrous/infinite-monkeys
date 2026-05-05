@@ -12,6 +12,7 @@ import {
   cashPerSec,
   cashFormatter,
   getTotalMonkeys,
+  getEta,
 } from "./helpers.js";
 
 // ====================================
@@ -160,7 +161,7 @@ for (const type of Object.keys(monkeyTypes)) {
 }
 
 export function checkWin() {
-  const ETAInSeconds = Math.floor(gameState.ETA * secondsPerTick());
+  const ETAInSeconds = Math.floor(getEta() * secondsPerTick());
   const ETAInYears = ETAInSeconds / 31536000;
 
   const ticksInSeconds = Math.floor(gameState.ticks * secondsPerTick());

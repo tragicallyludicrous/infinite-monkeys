@@ -69,8 +69,7 @@ export class AutoClicker {
   }
 
   static buy(dev = false) {
-    const { cash, autoClickerCost, autoClickers } = gameState;
-    if (!dev && cash < autoClickerCost) return;
+    if (!dev && gameState.cash < gameState.autoClickerCost) return;
     if (!dev) gameState.cash -= autoClickerCost;
     const newClicker = new AutoClicker();
     spawnAutoClicker(newClicker);
