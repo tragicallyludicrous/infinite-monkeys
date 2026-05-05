@@ -1,10 +1,12 @@
 import { gameState } from "./state.js";
 
-import { getRandomHighlightColor, getAllMonkeys } from "./helpers.js";
+import { getAllMonkeys } from "./economy.js";
+
+import { getRandomHighlightColor } from "./random.js";
 
 import { AUTOCLICKER_TIME } from "./config.js";
 
-import { spawnAutoClicker } from "./render.js";
+import { spawnAutoClicker } from "./cards.js";
 
 // ====================================
 // ---  AUTOCLICKER LOGIC ---
@@ -70,7 +72,7 @@ export class AutoClicker {
 
   static buy(dev = false) {
     if (!dev && gameState.cash < gameState.autoClickerCost) return;
-    if (!dev) gameState.cash -= autoClickerCost;
+    if (!dev) gameState.cash -= gameState.autoClickerCost;
     const newClicker = new AutoClicker();
     spawnAutoClicker(newClicker);
   }

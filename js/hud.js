@@ -5,15 +5,16 @@ import {
   MONKEY_COST_MULTIPLIER,
   AUTOCLICKER_COST_MULTIPLIER,
   monkeyTypes,
+  SECONDS_PER_TICK,
 } from "./config.js";
 import {
-  secondsPerTick,
-  etaToString,
   cashPerSec,
   cashFormatter,
   getTotalMonkeys,
   getEta,
-} from "./helpers.js";
+} from "./economy.js";
+import { getButton, getInput } from "./dom.js";
+import { etaToString } from "./format.js";
 
 // ====================================
 // ---  UI Updates ---
@@ -35,13 +36,21 @@ export function initializeUI() {
 
 export function updateStats() {
   // Destructure variables for read-only use
-  const { cash, monkeys, autoClickers, monkeyPacks, monkeyFarms } = gameState;
+  const {
+    cash,
+    monkeys,
+    autoClickers,
+    monkeyPacks,
+    monkeyFarms,
+    topScoringMonkey,
+  } = gameState;
   const passageDisplay = document.getElementById("passage-to-match");
   const etaDisplay = document.getElementById("ETA");
   const cashDisplay = document.getElementById("cash-display");
   const autoClickersDisplay = document.getElementById("autoclickers-display");
   const monkeysDisplay = document.getElementById("monkeys-display");
   const cashPerSecDisplay = document.getElementById("cash-per-second");
+  const bestMonkey = document.getElementById("top-scoring-monkey");
   const totalMonkeys = getTotalMonkeys();
   const totalMonkeyUnits =
     monkeys.length + monkeyPacks.length + monkeyFarms.length;
@@ -50,8 +59,7 @@ export function updateStats() {
   passageDisplay.innerHTML = `<b>Passage:</b> ${gameState.passage}`;
 
   // Passage Updater Minimum
-  document.getElementById("change-passage").minLength =
-    gameState.passage.length;
+  getInput("change-passage").minLength = gameState.passage.length;
 
   // ETA
   if (gameState.generations != 0) {
@@ -83,8 +91,14 @@ export function updateStats() {
 
   monkeysDisplay.innerHTML = "Monkeys: " + totalMonkeys;
 
+  if (topScoringMonkey) {
+    bestMonkey.innerHTML =
+      "<b>Top Scoring Monkey:</b> " + topScoringMonkey.name;
+    bestMonkey.style.display = "";
+  }
+
   generations.innerHTML = `<b>Attempts: </b>${gameState.generations}`;
-  
+
   autoClickersDisplay.innerHTML = "AutoClickers: " + autoClickers.length;
 }
 
@@ -100,34 +114,26 @@ export function buttonUpdate() {
     monkeyFarmFlag,
   } = gameState;
 
-
-
   // --- MONKEY BUYING ---
 
-for (const type of Object.keys(monkeyTypes)) {
-  const btn = document.getElementById(`buy-${type}-button`);
-  const cost = gameState[`${type}Cost`];
-  const flag = type === "monkey" || gameState[`${type}Flag`];
+  for (const type of Object.keys(monkeyTypes)) {
+    const btn = getButton(`buy-${type}-button`);
+    const cost = gameState[`${type}Cost`];
+    const flag = type === "monkey" || gameState[`${type}Flag`];
 
-  btn.disabled = gameState.cash < cost;
+    btn.disabled = gameState.cash < cost;
 
-  if (
-    btn.innerHTML !=
-    `Buy Monkey: ${cashFormatter.format(cost)}`
-  ) {
-    btn.innerHTML = `Buy Monkey: ${cashFormatter.format(cost)}`;
+    if (btn.innerHTML != `Buy Monkey: ${cashFormatter.format(cost)}`) {
+      btn.innerHTML = `Buy Monkey: ${cashFormatter.format(cost)}`;
+    }
+
+    if (flag && btn.style.display == "none") {
+      btn.style.display = "block";
+    }
   }
 
-  if (flag && btn.style.display == "none") {
-    btn.style.display = "block";
-  } 
-}  
-
-
-  
-
   // --- AUTOCLICKER BUYING ---
-  
+
   const buyAutoClickerButton = document.getElementById(
     "buy-autoclicker-button",
   );
@@ -147,24 +153,23 @@ for (const type of Object.keys(monkeyTypes)) {
       `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`;
   }
 
-
   [
     ...gameState.monkeys,
     ...gameState.monkeyPacks,
     ...gameState.monkeyFarms,
   ].forEach((obj) => {
-    const btnSpd = document.getElementById(`speed-up-${obj.type}-${obj.id}`);
-    const btnInt = document.getElementById(`int-up-${obj.type}-${obj.id}`);
+    const btnSpd = getButton(`speed-up-${obj.type}-${obj.id}`);
+    const btnInt = getButton(`int-up-${obj.type}-${obj.id}`);
     if (btnSpd) btnSpd.disabled = gameState.cash < obj.speedBoosterCost;
     if (btnInt) btnInt.disabled = gameState.cash < obj.intBoosterCost;
   });
 }
 
 export function checkWin() {
-  const ETAInSeconds = Math.floor(getEta() * secondsPerTick());
+  const ETAInSeconds = Math.floor(getEta() * SECONDS_PER_TICK);
   const ETAInYears = ETAInSeconds / 31536000;
 
-  const ticksInSeconds = Math.floor(gameState.ticks * secondsPerTick());
+  const ticksInSeconds = Math.floor(gameState.ticks * SECONDS_PER_TICK);
   const ticksInMinutes = Math.floor(ticksInSeconds / 60);
   const ticksInHours = Math.floor(ticksInMinutes / 60);
   const ticksInDays = Math.floor(ticksInHours / 24);

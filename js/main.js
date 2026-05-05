@@ -1,13 +1,14 @@
 import { gameState } from "./state.js";
 import { AutoClicker } from "./clickers.js";
-import { checkWin, buttonUpdate, updateStats, initializeUI } from "./ui.js";
+import { checkWin, buttonUpdate, updateStats, initializeUI } from "./hud.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
 import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
 import { hudNotify } from "./notifications.js";
-import { passageFormatter } from "./helpers.js";
+import { passageFormatter } from "./format.js";
 import { MonkeyObject } from "./monkeys.js";
-import { renderPassages, updateCards, updateGameStats } from "./render.js";
+import { renderPassages, updateCards, updateGameStats } from "./cards.js";
+import { getInput } from "./dom.js";
 
 initializeUI();
 
@@ -35,11 +36,11 @@ document
   .getElementById("updatePassageForm")
   .addEventListener("submit", (event) => {
     event.preventDefault();
-    const input = document.getElementById("change-passage").value;
-    const newPassage = passageFormatter(input);
+    const input = getInput("change-passage");
+    const newPassage = passageFormatter(input.value);
     if (newPassage.length >= gameState.passage.length) {
       gameState.passage = newPassage;
-      document.getElementById("change-passage").value = "";
+      input.value = "";
     } else {
       hudNotify("New passage must be at least as long as old one!", "maroon");
     }
