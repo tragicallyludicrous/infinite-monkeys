@@ -110,20 +110,30 @@ export function buttonUpdate() {
     "buy-autoclicker-button",
   );
 
-  const buyMonkeyButton = document.getElementById("buy-monkey-button");
-  const buyMonkeyPackButton = document.getElementById("buy-monkeyPack-button");
-  const buyMonkeyFarmButton = document.getElementById("buy-monkeyFarm-button");
 
   // --- MONKEY BUYING ---
 
-  buyMonkeyButton.disabled = cash < monkeyCost;
+for (const type of Object.keys(monkeyTypes)) {
+  const btn = document.getElementById(`buy-${type}-button`);
+  const cost = gameState[`${type}Cost`];
+  const flag = type === "monkey" || gameState[`${type}Flag`];
+
+  btn.disabled = gameState.cash < cost;
 
   if (
-    buyMonkeyButton.innerHTML !=
-    `Buy Monkey: ${cashFormatter.format(monkeyCost)}`
+    btn.innerHTML !=
+    `Buy Monkey: ${cashFormatter.format(cost)}`
   ) {
-    buyMonkeyButton.innerHTML = `Buy Monkey: ${cashFormatter.format(monkeyCost)}`;
+    btn.innerHTML = `Buy Monkey: ${cashFormatter.format(cost)}`;
   }
+
+  if (flag && btn.style.display == "none") {
+    btn.style.display = "block";
+  } 
+}  
+
+
+  
 
   // --- AUTOCLICKER BUYING ---
   if (autoClickerFlag && buyAutoClickerButton.style.display == "none") {
@@ -141,33 +151,6 @@ export function buttonUpdate() {
       `Buy AutoClicker: ${cashFormatter.format(autoClickerCost)}`;
   }
 
-  // --- MONKEYPACK BUYING ---
-  if (monkeyPackFlag && buyMonkeyPackButton.style.display == "none") {
-    buyMonkeyPackButton.style.display = "block";
-  }
-
-  buyMonkeyPackButton.disabled = cash < monkeyPackCost;
-
-  if (
-    buyMonkeyPackButton.innerHTML !=
-    `Buy MonkeyPack: ${cashFormatter.format(monkeyPackCost)}`
-  ) {
-    buyMonkeyPackButton.innerHTML = `Buy MonkeyPack: ${cashFormatter.format(monkeyPackCost)}`;
-  }
-
-  // --- MONKEYFARM BUYING ---
-  if (monkeyFarmFlag && buyMonkeyFarmButton.style.display == "none") {
-    buyMonkeyFarmButton.style.display = "block";
-  }
-
-  buyMonkeyFarmButton.disabled = cash < monkeyFarmCost;
-
-  if (
-    buyMonkeyFarmButton.innerHTML !=
-    `Buy MonkeyFarm: ${cashFormatter.format(monkeyFarmCost)}`
-  ) {
-    buyMonkeyFarmButton.innerHTML = `Buy MonkeyFarm: ${cashFormatter.format(monkeyFarmCost)}`;
-  }
 
   [
     ...gameState.monkeys,
