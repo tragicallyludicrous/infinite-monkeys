@@ -8,7 +8,7 @@ import {
 } from "./config.js";
 import {
   secondsPerTick,
-  ETAtoString,
+  etaToString,
   cashPerSec,
   cashFormatter,
   getTotalMonkeys,
@@ -54,7 +54,7 @@ export function updateStats() {
 
   // ETA
   if (gameState.generations != 0) {
-    etaDisplay.innerHTML = `<b>ETA: </b>${ETAtoString()}`;
+    etaDisplay.innerHTML = `<b>ETA: </b>${etaToString()}`;
     cashPerSecDisplay.innerHTML = `<b>Cash/sec: </b>${cashFormatter.format(cashPerSec())}`;
   }
 

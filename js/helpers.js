@@ -108,9 +108,7 @@ export function monkeyProb(object) {
   return (pInt + (1 - pInt) * pLuck) ** gameState.passage.length;
 }
 
-export function ETAtoString() {
-  if (gameState.generations === 0) return; // no data yet, skip ETA
-
+export function getEta() {
   const probability = getAllMonkeys().reduce(
     (acc, object) => acc + monkeyProb(object),
     0,
@@ -118,34 +116,32 @@ export function ETAtoString() {
 
   const requiredGenerations = 1 / probability;
   const genPerTick = gameState.generations / gameState.ticks;
-  const requiredTicks = requiredGenerations / genPerTick;
-  gameState.ETA = requiredTicks;
+  return requiredGenerations / genPerTick;
+}
 
-  const seconds = Math.floor(gameState.ETA * secondsPerTick());
+export function etaToString() {
+  if (gameState.generations === 0) return; // no data yet, skip ETA
+
+  const etaFormatter = new Intl.DurationFormat("en", { style: "long" });
+  
+  const seconds = Math.floor(getEta() * secondsPerTick());
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
   const years = Math.floor(days / 365);
-  const daysOnly = days % 365;
-  const hoursOnly = hours % 24;
-  const minutesOnly = minutes % 60;
-  const secondsOnly = seconds % 60;
 
-  let string = yearFormatter(years) + " years";
-
-  if (years <= 10) {
-    string = `${years} years, ${daysOnly} days`;
-    if (years < 1) {
-      string = `${daysOnly} days, ${hoursOnly} hours`;
-      if (days < 10) {
-        string = `${days} days, ${hoursOnly} hours, ${minutesOnly} minutes`;
-        if (days < 1) {
-          string = `${hours} hours, ${minutesOnly} minutes, ${secondsOnly} seconds`;
-        }
-      }
-    }
+  if (years > 10) return `${yearFormatter(years)} years`;
+  
+  if (days < 1) {
+    return etaFormatter.format({ hours, minutes: minutes % 60, seconds: seconds % 60 });
   }
-  return string;
+  if (days < 10) {
+    return etaFormatter.format({ days, hours: hours % 24, minutes: minutes % 60, seconds: seconds % 60 });
+  }
+  if (years < 1) {
+    return etaFormatter.format({ days, hours: hours % 24 });
+  }
+  return etaFormatter.format({ years, days: days % 365 });
 }
 
 export function getAllMonkeys() {
