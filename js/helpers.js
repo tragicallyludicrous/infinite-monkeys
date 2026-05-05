@@ -54,7 +54,8 @@ export function ticksPerSecond() {
 export function payoutLog(num) {
   const logEntry = { tick: gameState.ticks, payout: num };
   const oneMinute = 60 * ticksPerSecond();
-  gameState.historicCash.push(logEntry);
+  const entries = gameState.historicCash;
+  entries.push(logEntry);
   gameState.historicCash = entries.filter(
     (e) => e.tick >= gameState.ticks - oneMinute,
   );
