@@ -13,22 +13,8 @@ import { gameState } from "./state.js";
 // ====================================
 
 export function getRandomHighlightColor() {
-  // Generate a random integer between a minimum and maximum value (inclusive)
-  function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  // Generate R, G, B values within a high range (e.g., 200 to 255) for lightness
-  const r = randomInteger(200, 255);
-  const g = randomInteger(200, 255);
-  const b = randomInteger(200, 255);
-
-  // Convert each decimal value to a two-digit hex string and combine
-  const hr = r.toString(16).padStart(2, "0");
-  const hg = g.toString(16).padStart(2, "0");
-  const hb = b.toString(16).padStart(2, "0");
-
-  return "#" + hr + hg + hb;
+  const channel = () => Math.floor(200 + Math.random() * 56).toString(16).padStart(2, "0");
+  return `#${channel()}${channel()}${channel()}`;
 }
 
 export function randomLetter() {
