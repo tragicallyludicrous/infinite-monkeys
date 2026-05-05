@@ -78,20 +78,13 @@ export function updateStats() {
     AUTOCLICKER_COST_MULTIPLIER ** gameState.autoClickers.length;
 
   // Update simple stats
-  if (cashDisplay.innerHTML != "Cash: " + cashFormatter.format(cash)) {
-    cashDisplay.innerHTML = "Cash: " + cashFormatter.format(cash);
-  }
+  cashDisplay.innerHTML = "Cash: " + cashFormatter.format(cash);
 
-  if (monkeysDisplay.innerHTML != "Monkeys: " + totalMonkeys) {
-    monkeysDisplay.innerHTML = "Monkeys: " + totalMonkeys;
-  }
+  monkeysDisplay.innerHTML = "Monkeys: " + totalMonkeys;
 
-  if (generations.innerHTML != `<b>Attempts: </b>${gameState.generations}`) {
-    generations.innerHTML = `<b>Attempts: </b>${gameState.generations}`;
-  }
-  if (autoClickersDisplay.innerHTML != "AutoClickers: " + autoClickers.length) {
-    autoClickersDisplay.innerHTML = "AutoClickers: " + autoClickers.length;
-  }
+  generations.innerHTML = `<b>Attempts: </b>${gameState.generations}`;
+  
+  autoClickersDisplay.innerHTML = "AutoClickers: " + autoClickers.length;
 }
 
 export function buttonUpdate() {
@@ -106,9 +99,6 @@ export function buttonUpdate() {
     monkeyFarmFlag,
   } = gameState;
 
-  const buyAutoClickerButton = document.getElementById(
-    "buy-autoclicker-button",
-  );
 
 
   // --- MONKEY BUYING ---
@@ -136,6 +126,11 @@ for (const type of Object.keys(monkeyTypes)) {
   
 
   // --- AUTOCLICKER BUYING ---
+  
+  const buyAutoClickerButton = document.getElementById(
+    "buy-autoclicker-button",
+  );
+
   if (autoClickerFlag && buyAutoClickerButton.style.display == "none") {
     buyAutoClickerButton.style.display = "block";
   }
