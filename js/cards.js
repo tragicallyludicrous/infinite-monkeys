@@ -1,6 +1,6 @@
 import { gameState } from "./state.js";
-import { monkeyTypes, BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
-import { getAllMonkeys, cashFormatter } from "./helpers.js";
+import { BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
+import { getAllMonkeys, cashFormatter } from "./economy.js";
 
 let lastBestPassage = null;
 
@@ -39,12 +39,14 @@ export function createCard(monkey) {
   card.id = prefix;
 
   card.addEventListener("click", (event) => {
-    if (event.target.id === `${prefix}-soliloquize`) {
+    const target = /** @type {HTMLElement} */ (event.target);
+
+    if (target.id === `${prefix}-soliloquize`) {
       monkey.soliloquize();
-    } else if (event.target.closest(`#${prefix}-speed-up-button`)) {
+    } else if (target.closest(`#${prefix}-speed-up-button`)) {
       monkey.buySpeedBooster();
       updateCardStats(monkey);
-    } else if (event.target.closest(`#${prefix}-int-up-button`)) {
+    } else if (target.closest(`#${prefix}-int-up-button`)) {
       monkey.buyIntBooster();
       updateCardStats(monkey);
     }
@@ -214,7 +216,7 @@ export function updateGameStats() {
 
   if (bestPassage != lastBestPassage) {
     document.getElementById("best-passage").innerHTML =
-      "Best Passage: " + renderSingleOutput(bestPassage);
+      "<b>Best Passage:</b> " + renderSingleOutput(bestPassage);
     lastBestPassage = bestPassage;
   }
 }

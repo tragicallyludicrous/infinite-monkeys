@@ -1,11 +1,8 @@
 import { gameState } from "./state.js";
 
-import {
-  randomWord,
-  randomLetter,
-  payoutLog,
-  cashFormatter,
-} from "./helpers.js";
+import { payoutLog, cashFormatter } from "./economy.js";
+
+import { randomLetter, randomWord } from "./random.js";
 
 import {
   renderSingleOutput,
@@ -43,18 +40,18 @@ export class MonkeyObject {
   constructor(thing) {
     const size = monkeyTypes[thing];
     const array = gameState[thing + "s"];
-    
+
     this.header = thing.charAt(0).toUpperCase() + thing.slice(1);
     this.type = thing;
     this.id = array.length + 1;
-    this.name = ( randomWord(adjectives) + " " + randomWord(nouns) );
+    this.name = randomWord(adjectives) + " " + randomWord(nouns);
     this.speed = 1;
     this.speedBoosterCost = BASE_SPEED_COST * (size * 0.8);
     this.intBoosterCost = BASE_INT_COST * (size * 0.8);
     this.intelligence = 1;
     this.outputs = [];
     this.latestScore = null;
-    this.highScore = null;
+    this.highScore = 0;
     this.bestStreak = null;
     this.bestAttempt = null;
     this.typing = false;
@@ -63,14 +60,12 @@ export class MonkeyObject {
     array.push(this);
   }
 
-
-
   static buy(thing, dev = false) {
-      if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
-      if (!dev) gameState.cash -= gameState[thing + "Cost"];
-        const newMonkey = new MonkeyObject(thing);
-        createCard(newMonkey);
-  } 
+    if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
+    if (!dev) gameState.cash -= gameState[thing + "Cost"];
+    const newMonkey = new MonkeyObject(thing);
+    createCard(newMonkey);
+  }
 
   typeOnePassage() {
     let passageAttempt = "";
@@ -112,9 +107,6 @@ export class MonkeyObject {
     if (streakHigh) objectNotify(this, `New Best Streak! ${this.bestStreak}`);
 
     if (score > gameState.topScore) {
-      gameState.topScore = score;
-      gameState.topScoringMonkey = this;
-      gameState.bestPassage = output;
     }
     return score;
   }
@@ -162,13 +154,21 @@ export class MonkeyObject {
       payoutLog(totalPayout);
 
       objectNotify(this, `${cashFormatter.format(totalPayout)}`, "green");
+      console.log(
+        `localHighScore: ${localHighScore}, this.highScore: ${this.highScore}`,
+      );
       if (localHighScore > this.highScore) {
         objectNotify(this, "New High Score!");
         this.bestAttempt = this.outputs[scores.indexOf(localHighScore)];
         this.highScore = localHighScore;
+        console.log(
+          `gameState.topScore: ${gameState.topScore}, this.highScore: ${this.highScore}`,
+        );
         if (localHighScore > gameState.topScore) {
           gameState.topScore = localHighScore;
+          console.log("new top scorer: " + this);
           gameState.topScoringMonkey = this;
+          gameState.bestPassage = this.bestAttempt;
         }
         updateCardScores(this);
       }

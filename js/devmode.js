@@ -1,9 +1,6 @@
-import { gameState } from "./state.js";
-
 import { MonkeyObject } from "./monkeys.js";
 
-import { DEVELOPER_MODE } from "./config.js";
-import { getAllMonkeys } from "./helpers.js";
+import { getAllMonkeys } from "./economy.js";
 import { AutoClicker } from "./clickers.js";
 
 // ====================================

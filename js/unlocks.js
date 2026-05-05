@@ -9,7 +9,7 @@ import {
 } from "./config.js";
 import { hudNotify } from "./notifications.js";
 import { updateCardFlags } from "./cards.js";
-import { getTotalMonkeys } from "./helpers.js";
+import { getTotalMonkeys } from "./economy.js";
 
 // ====================================
 // ---  Unlock Flags ---

@@ -17,7 +17,7 @@ export const gameState = {
   monkeyCost: BASE_MONKEY_COST,
   generations: 0,
   topScore: 0,
-  topScoringMonkey: 0,
+  topScoringMonkey: null,
   bestPassage: null,
   autoClickerFlag: false,
   autoClickers: [],
