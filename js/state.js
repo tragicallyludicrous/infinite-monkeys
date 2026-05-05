@@ -26,7 +26,6 @@ export const gameState = {
   monkeyPackFlag: false,
   monkeyPacks: [],
   monkeyPackCost: 0,
-  intBoosterFlag: false,
   typewriterUpgradeFlag: false,
   monkeyFarms: [],
   monkeyFarmCost: 0,

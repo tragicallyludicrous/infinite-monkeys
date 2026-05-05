@@ -5,7 +5,6 @@ import {
   SCORE_MULTPLIER,
 } from "./config.js";
 
-import { objectNotify } from "./notifications.js";
 import { monkeyTypes } from "./config.js";
 import { gameState } from "./state.js";
 
@@ -42,37 +41,6 @@ export function randomWord(source) {
 
 export function passageFormatter(text) {
   return text.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
-}
-
-// Get score of a typed passage
-export function score(object, output) {
-  // if a correct letter is next to another correct letter, its worth an extra point, compounding.
-  let streak = 0;
-  let score = 0;
-
-  for (let i = 0; i < gameState.passage.length; i++) {
-    if (output[i] == gameState.passage[i]) {
-      streak++;
-      score += streak;
-    } else {
-      streak = 0;
-    }
-  }
-
-  if (streak > 1) {
-    if (streak > object.bestStreak) {
-      object.bestStreak = streak;
-      objectNotify(object, `New Best Streak! ${streak}`);
-    }
-  }
-
-  const payout = PAYOUT_BASE * SCORE_MULTPLIER ** score;
-
-  gameState.cash += payout;
-
-  payoutLog(payout);
-
-  return score;
 }
 
 export function secondsPerTick() {

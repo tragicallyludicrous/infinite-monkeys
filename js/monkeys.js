@@ -3,7 +3,6 @@ import { gameState } from "./state.js";
 import {
   randomWord,
   randomLetter,
-  score,
   payoutLog,
   cashFormatter,
 } from "./helpers.js";
@@ -63,6 +62,8 @@ export class MonkeyObject {
     this.threads = size;
     array.push(this);
   }
+
+
 
   static buy(thing, dev = false) {
     if (!dev) {
