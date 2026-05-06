@@ -33,15 +33,20 @@ export const BULK_DISCOUNT_MULTIPLIER = 0.8; // How much cheaper is buying 10 of
  */
 export const monkeyTypes = {
   monkey: { size: 1, threshold: 0, unlockMessage: null },
-  monkeyTeam: {
-    size: 5,
-    threshold: 2,
-    unlockMessage: "Let's go a little faster...",
-  },
+
   monkeyPack: {
     size: 10,
     threshold: 10,
     unlockMessage: "We're buying 10-packs now.",
   },
-  monkeyFarm: { size: 10, threshold: 50, unlockMessage: "MOAR MONKEYS" },
+  monkeyFarm: {
+    size: 100,
+    threshold: 50,
+    unlockMessage: "MOAR MONKEYS",
+  },
+  monkeyStadium: {
+    size: 1000,
+    threshold: 500,
+    unlockMessage: "Hope you have a good computer...",
+  },
 };
