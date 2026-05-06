@@ -3,6 +3,7 @@ import { getAllMonkeys } from "./economy.js";
 import { AutoClicker } from "./clickers.js";
 import { monkeyTypes } from "./config.js";
 import { camelToPascal } from "./format.js";
+import { getButton } from "./dom.js";
 
 // ====================================
 // --- DEV MODE ---
@@ -27,19 +28,13 @@ export function devModeActivate() {
   <hr>
 `;
 
-  document
-    .getElementById("dev-buy-monkey")
-    .addEventListener("click", () => MonkeyObject.buy("monkey", true));
+  // Listeners for dev monkeybuttons
+  for (const m of Object.keys(monkeyTypes)) {
+    getButton(`dev-buy-${m}`).addEventListener("click", () =>
+      MonkeyObject.buy(m, true),
+    );
+  }
 
-  document
-    .getElementById("dev-buy-monkeyTeam")
-    .addEventListener("click", () => MonkeyObject.buy("monkeyTeam", true));
-  document
-    .getElementById("dev-buy-monkeyPack")
-    .addEventListener("click", () => MonkeyObject.buy("monkeyPack", true));
-  document
-    .getElementById("dev-buy-monkeyFarm")
-    .addEventListener("click", () => MonkeyObject.buy("monkeyFarm", true));
   document
     .getElementById("dev-buy-autoClicker")
     .addEventListener("click", () => AutoClicker.buy(true));

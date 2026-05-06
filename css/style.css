@@ -21,12 +21,6 @@
 .correct {
   background-color: greenyellow;
 }
-/* 
-.monkey-wrapper,
-.monkeyPack-wrapper,
-.monkeyFarm-wrapper {
-  position: relative;
-} */
 
 .shop-area {
   display: flex;
