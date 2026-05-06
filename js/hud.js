@@ -67,7 +67,6 @@ export function updateStats() {
   }
 
   // Cost of all monkey objects
-  
 
   // Autoclicker cost
   gameState.autoClickerCost =
@@ -101,11 +100,12 @@ export function buttonUpdate() {
     const btn = getButton(`buy-${type}-button`);
     const cost = gameState[`${type}Cost`];
     const flag = type === "monkey" || gameState[`${type}Flag`];
+    const header = type.charAt(0).toUpperCase() + type.slice(1);
 
     btn.disabled = gameState.cash < cost;
 
-    if (btn.innerHTML != `Buy Monkey: ${cashFormatter.format(cost)}`) {
-      btn.innerHTML = `Buy Monkey: ${cashFormatter.format(cost)}`;
+    if (btn.innerHTML != `Buy ${header}: ${cashFormatter.format(cost)}`) {
+      btn.innerHTML = `Buy ${header}: ${cashFormatter.format(cost)}`;
     }
 
     if (flag && btn.style.display == "none") {

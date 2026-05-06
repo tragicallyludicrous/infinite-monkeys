@@ -67,10 +67,10 @@ export function createCard(monkey) {
           <h3>${monkey.name}</h3>
           
           <div id="${prefix}-speed-display" style="display:none"><p>Speed: <span id="${prefix}-speed-level">1</span></p>
-          <button id="${prefix}-speed-up-button">Speed Booster: <span id="${prefix}-speed-up-cost">${cashFormatter.format(BASE_SPEED_COST)}</span></button></div>
+          <button id="${prefix}-speed-up-button">Speed Booster: <span id="${prefix}-speed-up-cost">${cashFormatter.format(monkey.speedBoosterCost)}</span></button></div>
           
           <div id="${prefix}-int-display" style="display:none"><p>Intelligence: <span id="${prefix}-int-level">1</span></p>
-          <button id="${prefix}-int-up-button">Intelligence Booster: <span id="${prefix}-int-up-cost">${cashFormatter.format(BASE_INT_COST)}</span></button></div>
+          <button id="${prefix}-int-up-button">Intelligence Booster: <span id="${prefix}-int-up-cost">${cashFormatter.format(monkey.intBoosterCost)}</span></button></div>
           
           <div id="${prefix}-hs-display" style="display:none"><p>High Score: <span id="${prefix}-hs">0</span></p></div>
           

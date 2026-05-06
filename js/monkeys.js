@@ -51,6 +51,7 @@ export class MonkeyObject {
   static buy(thing, dev = false) {
     if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
     if (!dev) gameState.cash -= gameState[thing + "Cost"];
+    // update costs of all MonkeyObjects
     getCosts();
     const newMonkey = new MonkeyObject(thing);
     createCard(newMonkey);
