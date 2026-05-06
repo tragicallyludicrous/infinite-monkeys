@@ -22,15 +22,31 @@ export const NAMESPACE_LOOPS = 0;
 export const TICK_INTERVAL = 100;
 export const SECONDS_PER_TICK = TICK_INTERVAL / 1000;
 export const TICKS_PER_SECOND = 1000 / TICK_INTERVAL;
-export const MONKEYPACK_THRESHOLD = 10;
-export const MONKEYFARM_THRESHOLD = 50;
 export const BASE_INT_COST = 10000;
 export const INT_BOOST_THRESHOLD = 250;
 export const INT_COST_MULTIPLIER = (1 + Math.sqrt(5)) / 2; // Phi
 export const BULK_DISCOUNT_MULTIPLIER = 0.8; // How much cheaper is buying 10 of a monkeytype
 
+/**
+ * @typedef {{ size: number, threshold: number, unlockMessage: string | null }} MonkeyType
+ * @type {Record<string, MonkeyType>}
+ */
 export const monkeyTypes = {
-  monkey: 1,
-  monkeyPack: 10,
-  monkeyFarm: 100,
+  monkey: { size: 1, threshold: 0, unlockMessage: null },
+
+  monkeyPack: {
+    size: 10,
+    threshold: 10,
+    unlockMessage: "We're buying 10-packs now.",
+  },
+  monkeyFarm: {
+    size: 100,
+    threshold: 50,
+    unlockMessage: "MOAR MONKEYS",
+  },
+  monkeyStadium: {
+    size: 1000,
+    threshold: 500,
+    unlockMessage: "Hope you have a good computer...",
+  },
 };

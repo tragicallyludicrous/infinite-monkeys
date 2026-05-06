@@ -13,7 +13,7 @@ import {
   getAllMonkeys,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
-import { ticksToString } from "./format.js";
+import { camelToPascal, ticksToString } from "./format.js";
 
 // ====================================
 // ---  UI Updates ---
@@ -24,10 +24,10 @@ export function initializeUI() {
   const monkeyShop = document.getElementById("monkey-shop");
 
   for (const type of Object.keys(monkeyTypes)) {
-    const header = type.charAt(0).toUpperCase() + type.slice(1);
+    const header = camelToPascal(type);
     const div = document.createElement("div");
     const id = `buy-${type}-button`;
-    div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState[type + "Cost"])}</button>`;
+    div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState.costs[type])}</button>`;
     monkeyShop.appendChild(div);
   }
 
@@ -36,14 +36,7 @@ export function initializeUI() {
 
 export function updateStats() {
   // Destructure variables for read-only use
-  const {
-    cash,
-    monkeys,
-    autoClickers,
-    monkeyPacks,
-    monkeyFarms,
-    topScoringMonkey,
-  } = gameState;
+  const { cash, autoClickers, topScoringMonkey } = gameState;
   const passageDisplay = document.getElementById("passage-to-match");
   const etaDisplay = document.getElementById("ETA");
   const cashDisplay = document.getElementById("cash-display");
@@ -98,8 +91,8 @@ export function buttonUpdate() {
 
   for (const type of Object.keys(monkeyTypes)) {
     const btn = getButton(`buy-${type}-button`);
-    const cost = gameState[`${type}Cost`];
-    const flag = type === "monkey" || gameState[`${type}Flag`];
+    const cost = gameState.costs[type];
+    const flag = type === "monkey" || gameState.flags[type];
     const header = type.charAt(0).toUpperCase() + type.slice(1);
 
     btn.disabled = gameState.cash < cost;

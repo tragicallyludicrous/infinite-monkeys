@@ -1,10 +1,9 @@
 import { gameState } from "./state.js";
 import {
   INT_BOOST_THRESHOLD,
-  MONKEYFARM_THRESHOLD,
-  MONKEYPACK_THRESHOLD,
   AUTOCLICKER_THRESHOLD,
   SPEED_BOOST_THRESHOLD,
+  monkeyTypes,
 } from "./config.js";
 import { hudNotify } from "./notifications.js";
 import { updateCardFlags } from "./cards.js";
@@ -15,13 +14,7 @@ import { getTotalMonkeys } from "./economy.js";
 // ====================================
 
 export function flagSet() {
-  const {
-    autoClickerFlag,
-    speedBoosterFlag,
-    monkeyPackFlag,
-    monkeyFarmFlag,
-    intBoosterFlag,
-  } = gameState;
+  const { autoClickerFlag, speedBoosterFlag, intBoosterFlag } = gameState;
 
   const totalMonkeys = getTotalMonkeys();
 
@@ -48,16 +41,13 @@ export function flagSet() {
     );
   }
 
-  // -- MONKEYPACKS ---
-  if (totalMonkeys >= MONKEYPACK_THRESHOLD && !monkeyPackFlag) {
-    gameState.monkeyPackFlag = true;
-    hudNotify("We're buying 10-packs now.", "maroon");
-  }
-
-  // -- MONKEYFARMS ---
-  if (totalMonkeys >= MONKEYFARM_THRESHOLD && !monkeyFarmFlag) {
-    gameState.monkeyFarmFlag = true;
-    updateCardFlags();
-    hudNotify("MOAR MONKEYS", "maroon");
+  // --- MONKEY UNLOCKS ---
+  for (const [type, def] of Object.entries(monkeyTypes)) {
+    if (type === "monkey") continue; // always unlocked
+    if (totalMonkeys >= def.threshold && !gameState.flags[type]) {
+      gameState.flags[type] = true;
+      updateCardFlags();
+      if (def.unlockMessage) hudNotify(def.unlockMessage, "maroon");
+    }
   }
 }

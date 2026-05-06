@@ -18,24 +18,8 @@
   position: relative;
 }
 
-.monkeyPack-card,
-.monkeyFarm-card {
-  border: 2px solid black;
-  padding: 10px;
-  text-align: center;
-  min-height: 100px;
-  overflow-wrap: anywhere;
-  position: relative;
-}
-
 .correct {
   background-color: greenyellow;
-}
-
-.monkey-wrapper,
-.monkeyPack-wrapper,
-.monkeyFarm-wrapper {
-  position: relative;
 }
 
 .shop-area {

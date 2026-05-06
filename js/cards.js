@@ -1,5 +1,4 @@
 import { gameState } from "./state.js";
-import { BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
 import { getAllMonkeys, cashFormatter } from "./economy.js";
 
 let lastBestPassage = null;
@@ -35,7 +34,7 @@ export function createCard(monkey) {
   wrapper.id = `${prefix}-wrapper`;
   wrapper.className = `${type}-wrapper`;
 
-  card.className = `${type}-card`;
+  card.className = `monkey-card`;
   card.id = prefix;
 
   card.addEventListener("click", (event) => {

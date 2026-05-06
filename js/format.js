@@ -3,6 +3,10 @@
 import { SECONDS_PER_TICK } from "./config.js";
 import { gameState } from "./state.js";
 
+export function camelToPascal(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function passageFormatter(text) {
   return text.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
 }

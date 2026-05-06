@@ -19,6 +19,7 @@ import {
 import { adjectives, nouns } from "./monkeynames.js";
 
 import { objectNotify } from "./notifications.js";
+import { camelToPascal } from "./format.js";
 
 // ====================================
 // ---  CORE MONKEY OBJECT ---
@@ -26,11 +27,11 @@ import { objectNotify } from "./notifications.js";
 
 export class MonkeyObject {
   constructor(thing) {
-    const size = monkeyTypes[thing];
-    const array = gameState[thing + "s"];
+    const size = monkeyTypes[thing].size;
+    const array = gameState.monkeys[thing];
 
-    this.header = thing.charAt(0).toUpperCase() + thing.slice(1);
     this.type = thing;
+    this.header = camelToPascal(this.type);
     this.id = array.length + 1;
     this.name = randomWord(adjectives) + " " + randomWord(nouns);
     this.speed = 1;
@@ -48,9 +49,9 @@ export class MonkeyObject {
     array.push(this);
   }
 
-  static buy(thing, dev = false) {
-    if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
-    if (!dev) gameState.cash -= gameState[thing + "Cost"];
+  static buy(thing, dev = "") {
+    if (!dev && gameState.cash < gameState.costs[thing]) return;
+    if (!dev) gameState.cash -= gameState.costs[thing];
     // update costs of all MonkeyObjects
     getCosts();
     const newMonkey = new MonkeyObject(thing);
@@ -108,7 +109,7 @@ export class MonkeyObject {
 
   soliloquize() {
     const { typing, typingProgress, type, id, speed } = this;
-    if (this.typing) return;
+    if (typing) return;
 
     this.typing = true;
 

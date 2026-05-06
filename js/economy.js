@@ -56,8 +56,8 @@ export function getEta() {
 export function getAllMonkeys() {
   const allMonkeys = [];
 
-  for (let type in monkeyTypes) {
-    allMonkeys.push(...gameState[type + "s"]);
+  for (let type of Object.keys(monkeyTypes)) {
+    allMonkeys.push(...gameState.monkeys[type]);
   }
 
   return allMonkeys;
@@ -65,7 +65,8 @@ export function getAllMonkeys() {
 
 export function getTotalMonkeys() {
   return Object.keys(monkeyTypes).reduce(
-    (acc, type) => acc + gameState[type + "s"].length * monkeyTypes[type],
+    (acc, type) =>
+      acc + gameState.monkeys[type].length * monkeyTypes[type].size,
     0,
   );
 }
@@ -73,10 +74,10 @@ export function getTotalMonkeys() {
 // Update the cost of all monkeyObjects
 export function getCosts() {
   for (const m of Object.keys(monkeyTypes)) {
-    gameState[m + "Cost"] =
+    gameState.costs[m] =
       BASE_MONKEY_COST *
-      monkeyTypes[m] *
-      (BULK_DISCOUNT_MULTIPLIER ** Math.log10(monkeyTypes[m]) *
+      monkeyTypes[m].size *
+      (BULK_DISCOUNT_MULTIPLIER ** Math.log10(monkeyTypes[m].size) *
         MONKEY_COST_MULTIPLIER ** (getAllMonkeys().length + 1));
   }
 }
