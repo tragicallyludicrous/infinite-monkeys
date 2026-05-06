@@ -3,12 +3,12 @@ import { AutoClicker } from "./clickers.js";
 import { checkWin, buttonUpdate, updateStats, initializeUI } from "./hud.js";
 import { flagSet } from "./unlocks.js";
 import { devModeActivate } from "./devmode.js";
-import { DEVELOPER_MODE, TICK_INTERVAL } from "./config.js";
+import { DEVELOPER_MODE, TICK_INTERVAL, monkeyTypes } from "./config.js";
 import { hudNotify } from "./notifications.js";
 import { passageFormatter } from "./format.js";
 import { MonkeyObject } from "./monkeys.js";
 import { renderPassages, updateCards, updateGameStats } from "./cards.js";
-import { getInput } from "./dom.js";
+import { getInput, getButton } from "./dom.js";
 
 initializeUI();
 
@@ -16,21 +16,32 @@ initializeUI();
 // --- Event Listeners ---
 // ====================================
 
-document
-  .getElementById("buy-monkey-button")
-  .addEventListener("click", () => MonkeyObject.buy("monkey"));
+export function monkeyListeners(dev = "") {
+  // Listeners for monkeybuttons
+  for (const m of Object.keys(monkeyTypes)) {
+    getButton(`${dev}buy-${m}-button`).addEventListener("click", () =>
+      MonkeyObject.buy(m),
+    );
+  }
+}
+
+monkeyListeners();
 
 document
   .getElementById("buy-autoclicker-button")
   .addEventListener("click", () => AutoClicker.buy());
 
-document
-  .getElementById("buy-monkeyPack-button")
-  .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
+// document
+//   .getElementById("buy-monkey-button")
+//   .addEventListener("click", () => MonkeyObject.buy("monkey"));
 
-document
-  .getElementById("buy-monkeyFarm-button")
-  .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
+// document
+//   .getElementById("buy-monkeyPack-button")
+//   .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
+
+// document
+//   .getElementById("buy-monkeyFarm-button")
+//   .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
 
 document
   .getElementById("updatePassageForm")
