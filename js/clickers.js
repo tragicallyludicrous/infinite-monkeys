@@ -66,7 +66,7 @@ export class AutoClicker {
     return chosenObject;
   }
 
-  static buy(dev = false) {
+  static buy(dev = "") {
     if (!dev && gameState.cash < gameState.autoClickerCost) return;
     if (!dev) gameState.cash -= gameState.autoClickerCost;
     const newClicker = new AutoClicker();

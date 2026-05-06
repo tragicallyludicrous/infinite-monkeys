@@ -33,7 +33,7 @@ export function devModeActivate() {
 
   document
     .getElementById("dev-buy-autoClicker")
-    .addEventListener("click", () => AutoClicker.buy(true));
+    .addEventListener("click", () => AutoClicker.buy("dev-"));
   document
     .getElementById("dev-speed-upgrade")
     .addEventListener("click", () => devAddSpeed());
