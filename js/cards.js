@@ -1,5 +1,4 @@
 import { gameState } from "./state.js";
-import { BASE_SPEED_COST, BASE_INT_COST } from "./config.js";
 import { getAllMonkeys, cashFormatter } from "./economy.js";
 
 let lastBestPassage = null;

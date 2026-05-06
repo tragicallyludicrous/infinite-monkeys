@@ -1,4 +1,5 @@
 // Helper functions that geneate randomness
+
 import { ALPHABET } from "./config.js";
 
 export function getRandomHighlightColor() {

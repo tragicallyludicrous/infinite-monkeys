@@ -36,14 +36,7 @@ export function initializeUI() {
 
 export function updateStats() {
   // Destructure variables for read-only use
-  const {
-    cash,
-    monkeys,
-    autoClickers,
-    monkeyPacks,
-    monkeyFarms,
-    topScoringMonkey,
-  } = gameState;
+  const { cash, autoClickers, topScoringMonkey } = gameState;
   const passageDisplay = document.getElementById("passage-to-match");
   const etaDisplay = document.getElementById("ETA");
   const cashDisplay = document.getElementById("cash-display");

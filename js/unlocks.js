@@ -51,6 +51,7 @@ export function flagSet() {
   // -- MONKEYPACKS ---
   if (totalMonkeys >= MONKEYPACK_THRESHOLD && !monkeyPackFlag) {
     gameState.monkeyPackFlag = true;
+    updateCardFlags();
     hudNotify("We're buying 10-packs now.", "maroon");
   }
 
