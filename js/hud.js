@@ -13,7 +13,7 @@ import {
   getAllMonkeys,
 } from "./economy.js";
 import { getButton, getInput } from "./dom.js";
-import { ticksToString } from "./format.js";
+import { camelToPascal, ticksToString } from "./format.js";
 
 // ====================================
 // ---  UI Updates ---
@@ -24,7 +24,7 @@ export function initializeUI() {
   const monkeyShop = document.getElementById("monkey-shop");
 
   for (const type of Object.keys(monkeyTypes)) {
-    const header = type.charAt(0).toUpperCase() + type.slice(1);
+    const header = camelToPascal(type);
     const div = document.createElement("div");
     const id = `buy-${type}-button`;
     div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState[type + "Cost"])}</button>`;

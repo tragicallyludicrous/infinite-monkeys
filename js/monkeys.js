@@ -19,6 +19,7 @@ import {
 import { adjectives, nouns } from "./monkeynames.js";
 
 import { objectNotify } from "./notifications.js";
+import { camelToPascal } from "./format.js";
 
 // ====================================
 // ---  CORE MONKEY OBJECT ---
@@ -29,8 +30,8 @@ export class MonkeyObject {
     const size = monkeyTypes[thing];
     const array = gameState[thing + "s"];
 
-    this.header = thing.charAt(0).toUpperCase() + thing.slice(1);
     this.type = thing;
+    this.header = camelToPascal(this.type);
     this.id = array.length + 1;
     this.name = randomWord(adjectives) + " " + randomWord(nouns);
     this.speed = 1;

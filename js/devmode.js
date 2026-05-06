@@ -1,19 +1,26 @@
 import { MonkeyObject } from "./monkeys.js";
 import { getAllMonkeys } from "./economy.js";
 import { AutoClicker } from "./clickers.js";
+import { monkeyTypes } from "./config.js";
+import { camelToPascal } from "./format.js";
 
 // ====================================
 // --- DEV MODE ---
 // ====================================
 
+function enumerateDevTypes() {
+  let html = "";
+  for (const m of Object.keys(monkeyTypes)) {
+    html += `<button id="dev-buy-${m}">Add ${camelToPascal(m)}</button>`;
+  }
+  return html;
+}
+
 export function devModeActivate() {
   document.getElementById("dev-mode").style.display = "block";
   document.getElementById("dev-mode").innerHTML = `
   <h3>DEVELOPER MODE</h3>
-  <button id="dev-buy-monkey">Add Monkey</button>
-  <button id="dev-buy-monkeyTeam">Add MonkeyTeam</button>
-  <button id="dev-buy-monkeyPack">Add MonkeyPack</button>
-  <button id="dev-buy-monkeyFarm">Add MonkeyFarm</button>
+  ${enumerateDevTypes()}
   <button id="dev-buy-autoClicker">Add AutoClicker</button>
   <button id="dev-speed-upgrade">Upgrade Speed (ALL)</button>
   <button id="dev-int-upgrade">Upgrade Int (ALL)</button>
