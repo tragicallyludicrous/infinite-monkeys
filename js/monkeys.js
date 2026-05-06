@@ -27,8 +27,8 @@ import { camelToPascal } from "./format.js";
 
 export class MonkeyObject {
   constructor(thing) {
-    const size = monkeyTypes[thing];
-    const array = gameState[thing + "s"];
+    const size = monkeyTypes[thing].size;
+    const array = gameState.monkeys[thing];
 
     this.type = thing;
     this.header = camelToPascal(this.type);
@@ -50,8 +50,8 @@ export class MonkeyObject {
   }
 
   static buy(thing, dev = "") {
-    if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
-    if (!dev) gameState.cash -= gameState[thing + "Cost"];
+    if (!dev && gameState.cash < gameState.costs[thing]) return;
+    if (!dev) gameState.cash -= gameState.costs[thing];
     // update costs of all MonkeyObjects
     getCosts();
     const newMonkey = new MonkeyObject(thing);
@@ -109,7 +109,7 @@ export class MonkeyObject {
 
   soliloquize() {
     const { typing, typingProgress, type, id, speed } = this;
-    if (this.typing) return;
+    if (typing) return;
 
     this.typing = true;
 

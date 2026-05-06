@@ -27,7 +27,7 @@ export function initializeUI() {
     const header = camelToPascal(type);
     const div = document.createElement("div");
     const id = `buy-${type}-button`;
-    div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState[type + "Cost"])}</button>`;
+    div.innerHTML = `<button id="${id}" style="display:none">Buy ${header}: ${cashFormatter.format(gameState.costs[type])}</button>`;
     monkeyShop.appendChild(div);
   }
 
@@ -91,8 +91,8 @@ export function buttonUpdate() {
 
   for (const type of Object.keys(monkeyTypes)) {
     const btn = getButton(`buy-${type}-button`);
-    const cost = gameState[`${type}Cost`];
-    const flag = type === "monkey" || gameState[`${type}Flag`];
+    const cost = gameState.costs[type];
+    const flag = type === "monkey" || gameState.flags[type];
     const header = type.charAt(0).toUpperCase() + type.slice(1);
 
     btn.disabled = gameState.cash < cost;

@@ -3,18 +3,22 @@ import {
   BASE_MONKEY_COST,
   BASE_AUTOCLICKER_COST,
   PASSAGE,
+  monkeyTypes,
 } from "./config.js";
 
 // ====================================
 // --- Initial Globals ---
 // ====================================
 
+const types = Object.keys(monkeyTypes);
+
 export const gameState = {
+  // Scalars
   ticks: 0,
   cash: STARTING_CASH,
+  passage: PASSAGE,
+
   historicCash: [],
-  monkeys: [],
-  monkeyCost: BASE_MONKEY_COST,
   generations: 0,
   topScore: 0,
   topScoringMonkey: null,
@@ -24,21 +28,17 @@ export const gameState = {
   autoClickerCost: BASE_AUTOCLICKER_COST,
   speedBoosterFlag: false,
 
-  // TODO: DYNAMIC
-  monkeyTeamFlag: false,
-  monkeyTeams: [],
-  monkeyTeamCost: 0,
+  // Monkeys
+  monkeys: Object.fromEntries(types.map((t) => [t, []])),
+  costs: Object.fromEntries(types.map((t) => [t, BASE_MONKEY_COST])),
+  flags: Object.fromEntries(
+    types.filter((t) => t != "monkey").map((t) => [t, false]),
+  ),
 
-  monkeyPackFlag: false,
-  monkeyPacks: [],
-  monkeyPackCost: 0,
   typewriterUpgradeFlag: false,
-  monkeyFarms: [],
-  monkeyFarmCost: 0,
-  monkeyFarmFlag: false,
   intBoosterFlag: false,
   winFlag: false,
   autoClickerTargets: [],
-  passage: PASSAGE,
+
   ETA: "Never",
 };

@@ -31,18 +31,6 @@ document
   .getElementById("buy-autoclicker-button")
   .addEventListener("click", () => AutoClicker.buy());
 
-// document
-//   .getElementById("buy-monkey-button")
-//   .addEventListener("click", () => MonkeyObject.buy("monkey"));
-
-// document
-//   .getElementById("buy-monkeyPack-button")
-//   .addEventListener("click", () => MonkeyObject.buy("monkeyPack"));
-
-// document
-//   .getElementById("buy-monkeyFarm-button")
-//   .addEventListener("click", () => MonkeyObject.buy("monkeyFarm"));
-
 document
   .getElementById("updatePassageForm")
   .addEventListener("submit", (event) => {
