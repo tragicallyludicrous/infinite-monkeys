@@ -3,6 +3,7 @@ import {
   INT_BOOST_THRESHOLD,
   MONKEYFARM_THRESHOLD,
   MONKEYPACK_THRESHOLD,
+  MONKEYTEAM_THRESHOLD,
   AUTOCLICKER_THRESHOLD,
   SPEED_BOOST_THRESHOLD,
 } from "./config.js";
@@ -20,6 +21,7 @@ export function flagSet() {
     speedBoosterFlag,
     monkeyPackFlag,
     monkeyFarmFlag,
+    monkeyTeamFlag,
     intBoosterFlag,
   } = gameState;
 
@@ -46,6 +48,13 @@ export function flagSet() {
       "This is taking too long...Let's try a different tack.",
       "maroon",
     );
+  }
+
+  //  --- MONKEYTEAMS ---
+  if (totalMonkeys >= MONKEYTEAM_THRESHOLD && !monkeyTeamFlag) {
+    gameState.monkeyTeamFlag = true;
+    updateCardFlags();
+    hudNotify("Let's go a little faster...");
   }
 
   // -- MONKEYPACKS ---

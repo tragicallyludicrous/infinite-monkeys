@@ -22,6 +22,9 @@ export const NAMESPACE_LOOPS = 0;
 export const TICK_INTERVAL = 100;
 export const SECONDS_PER_TICK = TICK_INTERVAL / 1000;
 export const TICKS_PER_SECOND = 1000 / TICK_INTERVAL;
+
+// TODO: MAKE DYNAMIC
+export const MONKEYTEAM_THRESHOLD = 2;
 export const MONKEYPACK_THRESHOLD = 10;
 export const MONKEYFARM_THRESHOLD = 50;
 export const BASE_INT_COST = 10000;
@@ -31,6 +34,7 @@ export const BULK_DISCOUNT_MULTIPLIER = 0.8; // How much cheaper is buying 10 of
 
 export const monkeyTypes = {
   monkey: 1,
+  monkeyTeam: 5,
   monkeyPack: 10,
   monkeyFarm: 100,
 };

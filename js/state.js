@@ -23,6 +23,12 @@ export const gameState = {
   autoClickers: [],
   autoClickerCost: BASE_AUTOCLICKER_COST,
   speedBoosterFlag: false,
+
+  // TODO: DYNAMIC
+  monkeyTeamFlag: false,
+  monkeyTeams: [],
+  monkeyTeamCost: 0,
+
   monkeyPackFlag: false,
   monkeyPacks: [],
   monkeyPackCost: 0,

@@ -11,6 +11,7 @@ export function devModeActivate() {
   document.getElementById("dev-mode").innerHTML = `
   <h3>DEVELOPER MODE</h3>
   <button id="dev-buy-monkey">Add Monkey</button>
+  <button id="dev-buy-monkeyTeam">Add MonkeyTeam</button>
   <button id="dev-buy-monkeyPack">Add MonkeyPack</button>
   <button id="dev-buy-monkeyFarm">Add MonkeyFarm</button>
   <button id="dev-buy-autoClicker">Add AutoClicker</button>
@@ -22,6 +23,10 @@ export function devModeActivate() {
   document
     .getElementById("dev-buy-monkey")
     .addEventListener("click", () => MonkeyObject.buy("monkey", true));
+
+  document
+    .getElementById("dev-buy-monkeyTeam")
+    .addEventListener("click", () => MonkeyObject.buy("monkeyTeam", true));
   document
     .getElementById("dev-buy-monkeyPack")
     .addEventListener("click", () => MonkeyObject.buy("monkeyPack", true));
