@@ -4,6 +4,7 @@ import { AutoClicker } from "./clickers.js";
 import { monkeyTypes } from "./config.js";
 import { camelToPascal } from "./format.js";
 import { getButton } from "./dom.js";
+import { monkeyListeners } from "./main.js";
 
 // ====================================
 // --- DEV MODE ---
@@ -12,7 +13,7 @@ import { getButton } from "./dom.js";
 function enumerateDevTypes() {
   let html = "";
   for (const m of Object.keys(monkeyTypes)) {
-    html += `<button id="dev-buy-${m}">Add ${camelToPascal(m)}</button>`;
+    html += `<button id="dev-buy-${m}-button">Add ${camelToPascal(m)}</button>`;
   }
   return html;
 }
@@ -28,12 +29,7 @@ export function devModeActivate() {
   <hr>
 `;
 
-  // Listeners for dev monkeybuttons
-  for (const m of Object.keys(monkeyTypes)) {
-    getButton(`dev-buy-${m}`).addEventListener("click", () =>
-      MonkeyObject.buy(m, true),
-    );
-  }
+  monkeyListeners("dev-");
 
   document
     .getElementById("dev-buy-autoClicker")

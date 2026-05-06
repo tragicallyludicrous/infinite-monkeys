@@ -49,7 +49,7 @@ export class MonkeyObject {
     array.push(this);
   }
 
-  static buy(thing, dev = false) {
+  static buy(thing, dev = "") {
     if (!dev && gameState.cash < gameState[thing + "Cost"]) return;
     if (!dev) gameState.cash -= gameState[thing + "Cost"];
     // update costs of all MonkeyObjects

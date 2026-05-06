@@ -19,9 +19,9 @@ initializeUI();
 export function monkeyListeners(dev = "") {
   // Listeners for monkeybuttons
   for (const m of Object.keys(monkeyTypes)) {
-    getButton(`${dev}buy-${m}-button`).addEventListener("click", () =>
-      MonkeyObject.buy(m),
-    );
+    getButton(`${dev}buy-${m}-button`).addEventListener("click", () => {
+      MonkeyObject.buy(m, dev);
+    });
   }
 }
 
